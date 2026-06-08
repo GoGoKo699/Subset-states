@@ -1,6 +1,8 @@
 # Subset-state entanglement code
 
-This repository contains the numerical scripts used for the manuscript **Support-size entanglement trajectories of random subset states**.
+This repository contains the numerical code and generated data for the manuscript *Support-size entanglement trajectories of random subset states*.
+
+The code can regenerate the manuscript figures, redraw figures from existing CSV files, and perform local verification of the Table-I peak-entanglement support sizes. The full high-cost global peak search is not repeated here; instead, `scripts/peak_scaling_verification.py` verifies the tabulated peak values by sampling locally around the reported \(M_n\) values and fitting a quadratic curve in \(\log_2 M\).
 
 The code has two roles:
 
