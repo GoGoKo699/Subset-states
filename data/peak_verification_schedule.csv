@@ -1,0 +1,17 @@
+# Edit this file to change the local verification workload.
+# n: number of qubits
+# samples: random subset states sampled at each support size M
+# points: number of M values in the local window around the tabulated M_n
+# span: fractional window; span=0.20 means [0.8 M_n, 1.2 M_n]
+n,samples,points,span
+10,200,21,0.25
+12,200,21,0.25
+14,150,21,0.25
+16,100,19,0.25
+18,60,17,0.25
+20,30,15,0.25
+22,10,11,0.20
+24,5,9,0.20
+26,3,7,0.15
+28,2,7,0.15
+30,1,5,0.10
