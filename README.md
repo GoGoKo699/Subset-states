@@ -171,8 +171,8 @@ The palette is defined in `COOL_PALETTE`.
 
 - All stochastic scripts accept a `--seed` argument.
 - The local peak-verification script is designed to verify the tabulated values in a neighbourhood of the known peaks, not to repeat the original high-cost global search.
-- Large values such as `n=26,28,30` can be expensive with the dense exact entropy calculation. Use the schedule file to lower `samples` and `points`, or run those checks on a machine with sufficient memory and time.
-
+- The released precomputed peak-verification outputs cover `n=10,12,14,16,18,20`. The schedule file also lists `n=22,24,26,28,30`, but those higher-dimensional checks are not precomputed in this release because the dense exact entropy calculation becomes substantially more expensive at large `n`.
+- To verify the higher-`n` rows locally, use `scripts/peak_scaling_verification.py --all-table`, optionally after lowering `samples` and `points` in `data/peak_verification_schedule.csv`, or run the checks on a machine with sufficient memory and time.
 
 ### Matplotlib note
 
