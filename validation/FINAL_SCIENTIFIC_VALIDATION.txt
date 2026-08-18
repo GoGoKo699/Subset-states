@@ -1,0 +1,35 @@
+FINAL SCIENTIFIC VALIDATION
+=============================
+
+exhaustive_n4
+-------------
+supports_enumerated: 65535
+max_mean_rho_error: 2.067790383364354e-14
+max_average_purity_error: 8.881784197001252e-16
+max_residue_bound_violation_t1: 0
+max_residue_bound_violation_t2: -0
+max_entropy_routine_difference: 5.551115123125783e-16
+
+table_fits
+----------
+S_slope: 0.5093
+S_intercept: -0.9900909090909144
+log2M_slope: 0.7035409513877944
+log2M_intercept: -0.3577343681481748
+page_gap_n10: 0.207474201201169
+page_gap_n30: 0.01565248033929123
+support_fraction_n10: 0.1044921875
+support_fraction_n30: 0.00171054620295763
+
+dense_ansatz
+------------
+max_old_new_difference: 2.664535259100376e-15
+
+residue_controls
+----------------
+max_residue_claim_rounding_error: 3.951718681866057e-07
+prime_parity_ceiling_bits: 6.006491631063628
+prime_forced_gap_bits: 0.9935083689363715
+all_six_strongest_controls_below_all_1000_nulls: 1
+
+STATUS: PASS

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Redraw Figure 4 from previously generated CSV files."""
+"""Redraw revised Figure 4 from existing CSV files."""
 from __future__ import annotations
 
 import argparse
@@ -16,10 +16,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path, default=ROOT / "outputs" / "fig4")
     parser.add_argument("--out", type=Path, default=None)
-    parser.add_argument("--n", type=int, default=None, help="Optional; inferred from fig4_summary.csv if omitted.")
     args = parser.parse_args()
-    out = args.out if args.out is not None else args.data_dir / "fig4_approximation_from_csv.pdf"
-    plot_fig4(args.data_dir, out, n=args.n)
+    out = args.out if args.out is not None else args.data_dir / "fig4_approximation.pdf"
+    plot_fig4(args.data_dir, out)
 
 
 if __name__ == "__main__":

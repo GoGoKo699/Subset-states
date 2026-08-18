@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying paper and this software release."
+title: "Support-size entanglement trajectories of random subset states: code and data"
+version: "1.0.0-rc1"
+date-released: 2026-08-18
+repository-code: "https://github.com/GoGoKo699/Subset-states"
+url: "https://arxiv.org/abs/2501.06292"
+license: MIT
+authors:
+  - family-names: Lin
+    given-names: Ruge
+    affiliation: "The Hong Kong University of Science and Technology (Guangzhou)"
+  - family-names: Sierra
+    given-names: Germán
+    affiliation: "Instituto de Física Teórica UAM-CSIC, Universidad Autónoma de Madrid"
+  - family-names: Latorre
+    given-names: José I.
+    affiliation: "Centre for Quantum Technologies, National University of Singapore"
+preferred-citation:
+  type: article
+  title: "Support-size entanglement trajectories of random subset states"
+  year: 2026
+  authors:
+    - family-names: Lin
+      given-names: Ruge
+    - family-names: Sierra
+      given-names: Germán
+    - family-names: Latorre
+      given-names: José I.
+  identifiers:
+    - type: other
+      value: "arXiv:2501.06292"
+  url: "https://arxiv.org/abs/2501.06292"

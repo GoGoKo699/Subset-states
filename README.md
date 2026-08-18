@@ -1,179 +1,135 @@
-# Subset-state entanglement code
+# Support-size entanglement trajectories of random subset states
 
-This repository contains the numerical code and generated data for the manuscript *Support-size entanglement trajectories of random subset states*.
+Code, data, released figures, and validation for the manuscript
+**“Support-size entanglement trajectories of random subset states.”**
+The manuscript updates the existing preprint record [arXiv:2501.06292](https://arxiv.org/abs/2501.06292).
 
-The code can regenerate the manuscript figures, redraw figures from existing CSV files, and perform local verification of the Table-I peak-entanglement support sizes. The full high-cost global peak search is not repeated here; instead, `scripts/peak_scaling_verification.py` verifies the tabulated peak values by sampling locally around the reported \(M_n\) values and fitting a quadratic curve in \(\log_2 M\).
+Equal-positive-amplitude subset states exhibit a rise–peak–fall entanglement
+trajectory as their computational-basis support grows. This repository contains
+the fixed-cardinality ensemble calculations, exact-moment checks, numerical
+figure scripts, and constrained reference ensembles used in the paper.
 
-The code has two roles:
+## Key results represented in this repository
 
-1. regenerate the manuscript figures from numerical sampling; and
-2. provide a transparent, local verification script for the Table-I peak values.
+- Exact ensemble-mean reduced state for uniformly random supports of fixed size.
+- Exact average purity across a balanced bipartition.
+- A rigorous sufficient support scale
+  \[
+  M=2^{(2/3)n+O(1)},\qquad \overline S_{N,M}\geq n/2-1-o(1).
+  \]
+- Numerical rise–peak–fall trajectories and retained peak estimates through
+  \(n=30\).
+- Exact hypergeometric diagonal-entropy and residue-class entropy bounds.
+- Cardinality-, parity-, mod-4-, and mod-8-matched reference ensembles for
+  almost-prime supports, evaluated before and after a quantum Fourier transform.
 
-The peak values in Table I are treated as production data. The verification script samples in a window around the tabulated peak support size \(M_n\), then fits a quadratic curve in \(\log_2 M\). It is not a global rediscovery of the peaks.
+## Repository map
 
-## Installation
+```text
+subset_states/     reusable scientific routines
+scripts/           figure, validation, and local-verification entry points
+data/              Table I and released matched-null datasets
+outputs/            manuscript-ready figures and generated outputs
+tests/              lightweight and exhaustive small-system regression tests
+validation/         final independent validation reports
+exploratory/        historical experiments not used in the manuscript
+docs/               audit and release documentation
+```
+
+## Quick start
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
-```
-
-Run the smoke test:
-
-```bash
 python3 scripts/run_smoke_tests.py
 ```
 
-Expected output:
-
-```text
-smoke tests passed
-```
-
-## Important data files
-
-```text
-data/table_i_peaks.csv
-```
-
-contains the production Table-I values:
-
-```text
-n, M_n, S_n
-10, 107, 4.072
-...
-30, 1836685, 14.263
-```
-
-```text
-data/peak_verification_schedule.csv
-```
-
-contains a modifiable schedule for the local peak checks. Edit `samples`, `points`, and `span` there, or override them from the command line.
-
-## Regenerate figures from computation
-
-Main figures:
+Run the independent publication validation:
 
 ```bash
-python3 scripts/fig1_concentration.py
-python3 scripts/fig2_peak_scaling.py
-python3 scripts/fig3_spectral.py
-python3 scripts/fig4_approximation.py
-python3 scripts/fig5_qft_almost_primes.py
+python3 scripts/final_scientific_validation.py
 ```
 
-Appendix figures:
+Regenerate the fast deterministic figures and verify that all seven released
+PDFs are present:
 
 ```bash
-python3 scripts/fig6_renyi.py
-python3 scripts/fig7_partitions.py
-python3 scripts/fig8_greedy_partitions.py
+python3 scripts/reproduce_publication_figures.py
 ```
 
-The scripts write CSV data and PDF/PNG figures under `outputs/`.
-
-## Redraw figures from existing CSV files
-
-These scripts do not recompute entropy values:
+A reduced computational smoke run is available through:
 
 ```bash
-python3 scripts/plot_fig1_from_csv.py
-python3 scripts/plot_fig2_from_csv.py
-python3 scripts/plot_fig3_from_csv.py
-python3 scripts/plot_fig4_from_csv.py
-python3 scripts/plot_fig5_from_csv.py
-python3 scripts/plot_fig6_from_csv.py
-python3 scripts/plot_fig7_from_csv.py
-python3 scripts/plot_fig8_from_csv.py
+python3 scripts/reproduce_publication_figures.py --smoke
 ```
 
-## Figure 2 and Table-I scaling
+The full publication computations can be launched with `--full`, but several
+runs are intentionally expensive.
 
-Figure 2 is generated directly from `data/table_i_peaks.csv`:
+## Publication figures
 
-```bash
-python3 scripts/fig2_peak_scaling.py
-```
+| Figure | Scientific content | Main script | Released output |
+|---|---|---|---|
+| 1 | Support-size trajectory and cut comparison | `scripts/fig1_concentration.py` | `outputs/fig1/fig1_concentration.pdf` |
+| 2 | Peak entropy and support-size scaling | `scripts/fig2_peak_scaling.py` | `outputs/fig2/fig2_peak_scaling.pdf` |
+| 3 | Reduced-state spectrum near the peak | `scripts/fig3_spectral.py` | `outputs/fig3/fig3_spectral_bulk.pdf` |
+| 4 | Sparse and dense approximations | `scripts/fig4_approximation.py` | `outputs/fig4/fig4_approximation.pdf` |
+| 5 | Cardinality and residue controls | `scripts/fig5_qft_residue_controls.py` | `outputs/fig5/fig5_qft_residue_controls.pdf` |
+| 6 | Rényi trajectories | `scripts/fig6_renyi.py` | `outputs/fig6/fig6_renyi.pdf` |
+| 7 | Entropy over balanced cuts | `scripts/fig7_partitions.py` | `outputs/fig7/fig7_partitions.pdf` |
 
-Outputs:
+Figure 5 can be redrawn exactly from the released CSV files. The matched-null
+raw dataset contains 12,000 paired computational/Fourier samples.
 
-```text
-outputs/fig2/fig2_peak_scaling.pdf
-outputs/fig2/fig2_peak_scaling.png
-outputs/fig2/fig2_table_with_page.csv
-outputs/fig2/fig2_linear_fit_summary.csv
-```
+## Table I and local verification
 
-The linear-fit summary contains the coefficients for \(S_n\) and \(\log_2 M_n\).
-
-## Local verification of Table-I peaks
-
-Use:
+`data/table_i_peaks.csv` stores the retained peak estimates used in the paper.
+The command
 
 ```bash
 python3 scripts/peak_scaling_verification.py --n-values 10 12 14
 ```
 
-This samples support sizes in a local window around the tabulated peak \(M_n\), computes the average entropy at each sampled support size, and fits a quadratic curve in \(\log_2 M\).
+performs a local neighbourhood check around selected tabulated values. It is not
+a reconstruction of the original global search. Full technical provenance and
+the robustness comparison are documented in [PROVENANCE.md](PROVENANCE.md).
 
-For a larger but still manageable run:
+## Figure 5 constrained ensembles
 
-```bash
-python3 scripts/peak_scaling_verification.py --n-values 10 12 14 16 18 20
-```
-
-To use one uniform setting for all selected rows:
-
-```bash
-python3 scripts/peak_scaling_verification.py \
-  --n-values 10 12 14 16 \
-  --samples 500 \
-  --points 31 \
-  --span 0.25 \
-  --label check
-```
-
-To inspect the planned workload without running it:
-
-```bash
-python3 scripts/peak_scaling_verification.py --all-table --dry-run
-```
-
-Outputs:
+The released files are:
 
 ```text
-outputs/peak_verification/peak_verification_n*_samples.csv
-outputs/peak_verification/peak_verification_n*_fit.csv
-outputs/peak_verification/peak_verification_n*.pdf
-outputs/peak_verification/peak_verification_summary.csv
-outputs/peak_verification/peak_verification_summary.pdf
+data/fig5_random_qft_summary.csv
+data/fig5_almost_prime_unions.csv
+data/residue_matched_summary.csv
+data/residue_matched_samples.csv
+data/residue_entropy_bounds.csv
 ```
 
-To redraw one verification plot from CSV:
+Regenerate the null samples with:
 
 ```bash
-python3 scripts/plot_peak_verification_from_csv.py --n 14
+python3 scripts/run_residue_controls.py
+python3 scripts/fig5_qft_residue_controls.py
 ```
 
-## Colour palette
+## Reproducibility levels
 
-The default palette is deliberately cool-toned and avoids orange/red/yellow. To modify it, edit:
+1. **Fast:** unit tests, exact small-system checks, Figure 2, and Figure 5 redraw.
+2. **Standard:** regenerate selected numerical figures with reduced or custom
+   workloads.
+3. **Computational:** use publication defaults for the full sampling runs and
+   local high-dimensional peak checks.
 
-```text
-subset_states/plotting.py
-```
+All stochastic scripts expose seeds. The tested software environment is recorded
+in `requirements-tested.txt`.
 
-The palette is defined in `COOL_PALETTE`.
+## Citation
 
-## Reproducibility notes
+Use the citation metadata in `CITATION.cff`. The preferred paper citation is the
+updated arXiv record and, once available, the journal version.
 
-- All stochastic scripts accept a `--seed` argument.
-- The local peak-verification script is designed to verify the tabulated values in a neighbourhood of the known peaks, not to repeat the original high-cost global search.
-- The released precomputed peak-verification outputs cover `n=10,12,14,16,18,20`. The schedule file also lists `n=22,24,26,28,30`, but those higher-dimensional checks are not precomputed in this release because the dense exact entropy calculation becomes substantially more expensive at large `n`.
-- To verify the higher-`n` rows locally, use `scripts/peak_scaling_verification.py --all-table`, optionally after lowering `samples` and `points` in `data/peak_verification_schedule.csv`, or run the checks on a machine with sufficient memory and time.
+## License
 
-### Matplotlib note
-
-The figure scripts do not import `mpl_toolkits.axes_grid1`; inset panels use `Axes.inset_axes` through `subset_states.plotting.make_inset_axis`.  This avoids a common Ubuntu issue where user-site Matplotlib and system `mpl_toolkits` are mixed.  For the cleanest environment, run the code inside a Python virtual environment.
+The repository is released under the MIT License. See `LICENSE`.
