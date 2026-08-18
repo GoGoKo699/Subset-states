@@ -13,15 +13,19 @@ figure scripts, and constrained reference ensembles used in the paper.
 
 - Exact ensemble-mean reduced state for uniformly random supports of fixed size.
 - Exact average purity across a balanced bipartition.
-- A rigorous sufficient support scale
-  \[
-  M=2^{(2/3)n+O(1)},\qquad \overline S_{N,M}\geq n/2-1-o(1).
-  \]
 - Numerical rise–peak–fall trajectories and retained peak estimates through
-  \(n=30\).
+  $n=30$.
 - Exact hypergeometric diagonal-entropy and residue-class entropy bounds.
 - Cardinality-, parity-, mod-4-, and mod-8-matched reference ensembles for
   almost-prime supports, evaluated before and after a quantum Fourier transform.
+
+The exact purity result gives the rigorous sufficient support scale
+
+$$
+M=2^{(2/3)n+O(1)},
+\qquad
+\overline{S}_{N,M}\geq \frac{n}{2}-1-o(1).
+$$
 
 ## Repository map
 
