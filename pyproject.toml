@@ -1,0 +1,14 @@
+[project]
+name = "subset-state-entanglement"
+version = "1.0.0rc1"
+description = "Numerical and analytical tools for support-size entanglement trajectories of random subset states"
+requires-python = ">=3.10"
+authors = [
+  {name = "Ruge Lin"},
+  {name = "Germán Sierra"},
+  {name = "José I. Latorre"},
+]
+dependencies = ["numpy>=1.24", "scipy>=1.10", "matplotlib>=3.7"]
+
+[tool.setuptools]
+packages = ["subset_states"]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Figure 3: spectrum of the reduced density matrix at peak support."""
+"""Figure 3: reduced-density-matrix bulk and isolated positive mode."""
 from __future__ import annotations
 
 import argparse
@@ -9,14 +9,16 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-import matplotlib
-matplotlib.use("Agg", force=True)
-import matplotlib.pyplot as plt
 import numpy as np
 
-from subset_states.core import matrix_from_support, random_subset, summary_stats
+from subset_states.core import (
+    matrix_from_support,
+    mean_matrix_uniform_eigenvalue,
+    random_subset,
+    summary_stats,
+)
+from subset_states.csv_plotting import plot_fig3
 from subset_states.experiments import write_rows
-from subset_states.plotting import apply_journal_style, save_figure
 from subset_states.tables import PEAK_M
 
 
@@ -33,15 +35,17 @@ def main() -> None:
     m = args.m if args.m is not None else PEAK_M[args.n]
     rng = np.random.default_rng(args.seed)
     support = random_subset(args.n, m, rng)
-    omega = matrix_from_support(args.n, support)
-    rho = omega.conj().T @ omega
+    matrix = matrix_from_support(args.n, support)
+    rho = matrix.conj().T @ matrix
     eigvals = np.linalg.eigvalsh(rho).real
     eigvals[eigvals < 1e-15] = 0.0
-    eigvals = eigvals / eigvals.sum()
+    eigvals /= eigvals.sum()
     eigvals.sort()
-
-    rows = [{"index": i, "lambda": float(lam)} for i, lam in enumerate(eigvals)]
-    write_rows(args.outdir / "fig3_spectrum.csv", rows, ["index", "lambda"])
+    write_rows(
+        args.outdir / "fig3_spectrum.csv",
+        [{"index": i, "lambda": float(lam)} for i, lam in enumerate(eigvals)],
+        ["index", "lambda"],
+    )
 
     lambda0 = float(eigvals[-1])
     bulk = eigvals[:-1]
@@ -53,6 +57,7 @@ def main() -> None:
                 "n": args.n,
                 "M": m,
                 "lambda0": lambda0,
+                "lambda_mean_matrix": mean_matrix_uniform_eigenvalue(args.n, m),
                 "M_over_N": m / (1 << args.n),
                 "bulk_nonzero_count": stats.count,
                 "bulk_mean": stats.mean,
@@ -65,6 +70,7 @@ def main() -> None:
             "n",
             "M",
             "lambda0",
+            "lambda_mean_matrix",
             "M_over_N",
             "bulk_nonzero_count",
             "bulk_mean",
@@ -73,16 +79,7 @@ def main() -> None:
             "bulk_max",
         ],
     )
-
-    apply_journal_style()
-    fig, ax = plt.subplots(figsize=(4.7, 3.6))
-    positive_bulk = bulk[bulk > 0]
-    ax.hist(positive_bulk, bins=args.bins)
-    ax.set_xlabel(r"eigenvalue $\lambda$ excluding $\lambda_0$")
-    ax.set_ylabel("count")
-    ax.set_xlim(0, positive_bulk.max() * 1.05)
-    save_figure(fig, args.outdir / "fig3_spectral_bulk.pdf")
-    print(f"lambda0={lambda0:.8g}, M/N={m / (1 << args.n):.8g}")
+    plot_fig3(args.outdir, args.outdir / "fig3_spectral_bulk.pdf", bins=args.bins)
 
 
 if __name__ == "__main__":

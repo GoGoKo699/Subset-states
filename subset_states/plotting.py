@@ -7,8 +7,7 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 from cycler import cycler
 
-# A deliberately cool, non-warm palette: blue, teal, violet, slate, cyan, green-blue.
-# Avoids orange/red/yellow so that all default plots have a cool visual tone.
+# Cool, non-warm palette retained from the publication repository.
 COOL_PALETTE = [
     "#25639C",  # blue
     "#008C95",  # teal
@@ -22,24 +21,13 @@ COOL_PALETTE = [
 
 
 def make_inset_axis(ax, bounds=(0.57, 0.55, 0.39, 0.39)):
-    """Create an inset axis without importing mpl_toolkits.
-
-    Some Ubuntu/Python installations mix user-site Matplotlib with the system
-    mpl_toolkits package, which can break `mpl_toolkits.axes_grid1.inset_locator`
-    with an AttributeError involving matplotlib._docstring.  Using the built-in
-    Axes.inset_axes method avoids that dependency entirely.  The coordinates are
-    axis-relative: (left, bottom, width, height).
-    """
+    """Create an inset axis using Matplotlib's built-in API."""
 
     return ax.inset_axes(bounds)
 
 
 def apply_journal_style() -> None:
-    """Small, conservative figure defaults suitable for journal submission.
-
-    The colour cycle is intentionally cool-toned; it avoids the default orange/red
-    entries that can dominate Matplotlib figures.
-    """
+    """Conservative defaults suitable for the manuscript figures."""
 
     plt.rcParams.update(
         {
@@ -47,9 +35,11 @@ def apply_journal_style() -> None:
             "font.size": 9,
             "axes.labelsize": 9,
             "axes.titlesize": 9,
+            "axes.linewidth": 0.8,
             "legend.fontsize": 8,
             "xtick.labelsize": 8,
             "ytick.labelsize": 8,
+            "lines.linewidth": 1.15,
             "axes.prop_cycle": cycler(color=COOL_PALETTE),
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
@@ -62,6 +52,6 @@ def save_figure(fig, path: str | Path) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path)
-    # Store a PNG next to the PDF for quick inspection in repositories.
     if path.suffix.lower() == ".pdf":
         fig.savefig(path.with_suffix(".png"), dpi=300)
+    plt.close(fig)

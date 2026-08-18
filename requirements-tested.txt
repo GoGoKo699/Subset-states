@@ -1,0 +1,5 @@
+# Environment used for the publication-release validation on 2026-08-18.
+Python==3.13.5
+numpy==2.3.5
+scipy==1.17.0
+matplotlib==3.10.8

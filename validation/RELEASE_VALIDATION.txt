@@ -1,0 +1,17 @@
+PUBLICATION RELEASE VALIDATION
+==============================
+
+Date: 2026-08-18
+Python: 3.13.5
+
+Checks completed:
+- source compilation: PASS
+- unit and regression tests: PASS
+- independent final scientific validation: PASS
+- Figure 2 regeneration: PASS
+- Figure 5 redraw from released data: PASS
+- all seven final PDF figures present: PASS
+
+This package is an overlay release candidate. Existing historical output CSVs in
+the GitHub repository should be preserved by uploading over the current branch
+rather than deleting the repository contents first.

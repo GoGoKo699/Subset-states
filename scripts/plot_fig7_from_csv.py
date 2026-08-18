@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Redraw Figure 7 from fig7_partition_samples.csv."""
+"""Redraw revised Figure 7 from existing CSV files."""
 from __future__ import annotations
 
 import argparse
@@ -16,11 +16,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path, default=ROOT / "outputs" / "fig7")
     parser.add_argument("--out", type=Path, default=None)
-    parser.add_argument("--n", type=int, default=None)
-    parser.add_argument("--bins", type=int, default=60)
+    parser.add_argument("--bins", type=int, default=100)
     args = parser.parse_args()
-    out = args.out if args.out is not None else args.data_dir / "fig7_partitions_from_csv.pdf"
-    plot_fig7(args.data_dir, out, n=args.n, bins=args.bins)
+    out = args.out if args.out is not None else args.data_dir / "fig7_partitions.pdf"
+    plot_fig7(args.data_dir, out, bins=args.bins)
 
 
 if __name__ == "__main__":

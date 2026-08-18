@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Redraw Figure 3 from fig3_spectrum.csv."""
+"""Redraw revised Figure 3 from existing CSV files."""
 from __future__ import annotations
 
 import argparse
@@ -18,7 +18,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--bins", type=int, default=500)
     args = parser.parse_args()
-    out = args.out if args.out is not None else args.data_dir / "fig3_spectral_bulk_from_csv.pdf"
+    out = args.out if args.out is not None else args.data_dir / "fig3_spectral_bulk.pdf"
     plot_fig3(args.data_dir, out, bins=args.bins)
 
 
