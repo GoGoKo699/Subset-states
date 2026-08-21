@@ -12,20 +12,63 @@ figure scripts, and constrained reference ensembles used in the paper.
 ## Key results represented in this repository
 
 - Exact ensemble-mean reduced state for uniformly random supports of fixed size.
-- Exact average purity across a balanced bipartition.
+- Exact average purity across a balanced bipartition, yielding a rigorous
+  power-law support window, an optimal interior balance, and a dense-side
+  boundary.
 - Numerical rise–peak–fall trajectories and retained peak estimates through
   $n=30$.
 - Exact hypergeometric diagonal-entropy and residue-class entropy bounds.
 - Cardinality-, parity-, mod-4-, and mod-8-matched reference ensembles for
   almost-prime supports, evaluated before and after a quantum Fourier transform.
 
-The exact purity result gives the rigorous sufficient support scale
+## Analytic scale hierarchy
+
+Let $N=2^n$ and write a power-law support size as $M=cN^\gamma$, with
+$c>0$. The exact fixed-cardinality average-purity formula has the leading
+structure
 
 $$
-M=2^{(2/3)n+O(1)},
-\qquad
-\overline{S}_{N,M}\geq \frac{n}{2}-1-o(1).
+\overline{P}_{N,M}
+=
+2N^{-1/2}
++c^{-1}N^{-\gamma}
++c^2N^{2\gamma-2}
++\text{lower-order terms}.
 $$
+
+This separates three statements.
+
+- Every fixed exponent $1/2<\gamma<3/4$ gives
+
+  $$
+  \overline{S}_{N,M}\geq \frac{n}{2}-1-o(1).
+  $$
+
+- The exponent $\gamma=2/3$ uniquely balances the sparse
+  $N^{-\gamma}$ correction and the dense rectangle
+  $N^{2\gamma-2}$ correction. Optimizing the remaining prefactor gives
+
+  $$
+  M=2^{-1/3}N^{2/3}+O(1).
+  $$
+
+- The exponent $\gamma=3/4$ is the dense-side boundary at which the
+  rectangle contribution enters at the same $N^{-1/2}$ order as the
+  balanced-cut background.
+
+The numerical maximum of the mean von Neumann entropy is a separate quantity.
+Over $n=10,\ldots,30$, the retained estimates give
+
+$$
+\log_2\widehat M_n
+=
+0.703541\,n-0.357734.
+$$
+
+The pointwise effective exponent $\log_2\widehat M_n/n$ increases from
+approximately $0.674$ at $n=10$ to $0.694$ at $n=30$. This motivates
+comparison with the $3/4$ dense-side boundary but does not establish an
+asymptotic peak law.
 
 ## Repository map
 

@@ -1,4 +1,10 @@
-# Final target-reader and submission-level review
+# Historical target-reader and submission-level review
+
+> **Historical record.** This review is dated 17 August 2026 and predates the
+> three-scale manuscript revision, the public repository release, and the
+> `1.0.0-rc2` metadata. It is retained as a development record. For current
+> scientific provenance, see [PROVENANCE.md](../PROVENANCE.md) and the files
+> under [`validation/`](../validation/).
 
 **Manuscript:** *Support-size entanglement trajectories of random subset states*  
 **Target:** *Journal of Physics A: Mathematical and Theoretical*  

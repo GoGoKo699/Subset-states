@@ -351,7 +351,7 @@ def residue_class_entropy_ceiling(n: int, support: ArrayLike, matched_low_bits: 
     """Entropy ceiling from populations modulo 2**matched_low_bits.
 
     For the natural balanced cut, if p_r is the support population in residue
-    class r modulo 2**t, then S <= n/2 - t + H_2(p).  The case t=1 is the
+    class r modulo 2**t, then S <= n/2 - t + H(p).  The case t=1 is the
     parity ceiling.
     """
 
