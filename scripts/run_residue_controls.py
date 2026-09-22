@@ -96,7 +96,7 @@ def main() -> None:
     parser.add_argument("--matched-bits", type=int, nargs="+", default=[0, 1, 2, 3])
     parser.add_argument("--samples", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=2026081701)
-    parser.add_argument("--outdir", type=Path, default=ROOT / "data")
+    parser.add_argument("--outdir", type=Path, default=ROOT / "generated" / "full" / "fig5")
     args = parser.parse_args()
 
     if args.n <= 0 or args.n % 2:

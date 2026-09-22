@@ -70,7 +70,7 @@ def _fit_line(x: np.ndarray, y: np.ndarray) -> dict:
     }
 
 
-def plot_fig1(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None) -> None:
+def plot_fig1(data_dir: str | Path, out_path: str | Path, *, n: int | None = None) -> None:
     """Plot the two averaging procedures with explicit entropy units."""
 
     data_dir = Path(data_dir)
@@ -121,10 +121,10 @@ def plot_fig1(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None
     inset.set_xlabel(r"$M$", labelpad=1)
     inset.set_ylabel("bits", labelpad=1)
     inset.legend().remove()
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
-def plot_fig2(data_dir: str | Path, out_pdf: str | Path, *, write_fit_summary: bool = True) -> None:
+def plot_fig2(data_dir: str | Path, out_path: str | Path, *, write_fit_summary: bool = False) -> None:
     """Plot Table-I scaling, retaining all n=10,...,30 points."""
 
     data_dir = Path(data_dir)
@@ -143,7 +143,7 @@ def plot_fig2(data_dir: str | Path, out_pdf: str | Path, *, write_fit_summary: b
     fit_S = _fit_line(n, S_n)
     if write_fit_summary:
         fit_rows = [{"quantity": "log2_M_n", **fit_logM}, {"quantity": "S_n", **fit_S}]
-        write_rows(data_dir / "fig2_linear_fit_summary_from_csv.csv", fit_rows, fit_rows[0].keys())
+        write_rows(Path(out_path).parent / "fig2_linear_fit_summary_from_csv.csv", fit_rows, fit_rows[0].keys())
 
     apply_journal_style()
     fig, ax = plt.subplots(figsize=(4.7, 3.6))
@@ -172,10 +172,10 @@ def plot_fig2(data_dir: str | Path, out_pdf: str | Path, *, write_fit_summary: b
     ax.set_xticks([10, 15, 20, 25, 30])
     ax.set_ylim(0, max(log2_M.max(), page.max()) + 1)
     ax.legend(frameon=False, loc="upper left")
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
-def plot_fig3(data_dir: str | Path, out_pdf: str | Path, *, bins: int = 500) -> None:
+def plot_fig3(data_dir: str | Path, out_path: str | Path, *, bins: int = 500) -> None:
     """Plot the spectral bulk and compare three isolated-mode estimates."""
 
     data_dir = Path(data_dir)
@@ -221,7 +221,7 @@ def plot_fig3(data_dir: str | Path, out_pdf: str | Path, *, bins: int = 500) -> 
     inset.set_xlabel("isolated eigenvalue", labelpad=1)
     inset.tick_params(axis="y", labelsize=6.8)
     inset.tick_params(axis="x", labelsize=6.8)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
 def _draw_fig4(axis, rows: Sequence[dict], n: int, label_data: bool) -> None:
@@ -243,7 +243,7 @@ def _draw_fig4(axis, rows: Sequence[dict], n: int, label_data: bool) -> None:
     axis.plot(m, dense, "--", label=r"dense bulk $T_{N,M}$" if label_data else None)
 
 
-def plot_fig4(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None) -> None:
+def plot_fig4(data_dir: str | Path, out_path: str | Path, *, n: int | None = None) -> None:
     """Plot numerical data with corrected fixed-cardinality approximations."""
 
     data_dir = Path(data_dir)
@@ -267,10 +267,10 @@ def plot_fig4(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None
     inset.set_ylim(max(0, n / 2 - 3), n / 2)
     inset.set_xlabel(r"$M$", labelpad=1)
     inset.set_ylabel("bits", labelpad=1)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
-def plot_fig5(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None) -> None:
+def plot_fig5(data_dir: str | Path, out_path: str | Path, *, n: int | None = None) -> None:
     """Compare deterministic arithmetic supports with the random null distribution.
 
     The shaded regions are one ensemble standard deviation.  They represent the
@@ -325,7 +325,7 @@ def plot_fig5(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None
     ax.set_xlim(0, 1 << n)
     ax.set_ylim(0, n / 2)
     ax.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.46), ncol=2)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
 def _order_key(value) -> float:
@@ -365,7 +365,7 @@ def _draw_fig6(axis, rows: Sequence[dict]) -> list:
     return handles
 
 
-def plot_fig6(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None) -> None:
+def plot_fig6(data_dir: str | Path, out_path: str | Path, *, n: int | None = None) -> None:
     data_dir = Path(data_dir)
     rows = read_csv_rows(data_dir / "fig6_renyi_summary.csv")
     zoom = read_csv_rows(data_dir / "fig6_renyi_zoom_summary.csv")
@@ -392,7 +392,7 @@ def plot_fig6(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None
     labels = [r"$S^{(1)}$", r"$S^{(2)}$", r"$S^{(\infty)}$"]
     fig.legend(handles=handles, labels=labels, frameon=False, ncol=3, loc="lower center")
     fig.subplots_adjust(hspace=0.45, bottom=0.12)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
 def _families(rows: Sequence[dict]) -> list[str]:
@@ -404,7 +404,7 @@ def _families(rows: Sequence[dict]) -> list[str]:
     return seen
 
 
-def plot_fig7(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None, bins: int = 100) -> None:
+def plot_fig7(data_dir: str | Path, out_path: str | Path, *, n: int | None = None, bins: int = 100) -> None:
     """Plot both bipartition distributions on a common entropy scale."""
 
     data_dir = Path(data_dir)
@@ -462,7 +462,7 @@ def plot_fig7(data_dir: str | Path, out_pdf: str | Path, *, n: int | None = None
             ax.legend(frameon=False, loc="upper right")
     axes[-1].set_xlabel("entropy (bits)")
     fig.subplots_adjust(hspace=0.30)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
 def _n_from_fig8_path(path: Path) -> int:
@@ -474,7 +474,7 @@ def _n_from_fig8_path(path: Path) -> int:
 
 def plot_fig8(
     data_dir: str | Path,
-    out_pdf: str | Path,
+    out_path: str | Path,
     *,
     n_values: Sequence[int] | None = None,
     bins: int = 120,
@@ -526,10 +526,10 @@ def plot_fig8(
         ax.set_title(rf"$n={n}$, $M={M}$")
         ax.legend(frameon=False)
     fig.subplots_adjust(hspace=0.55)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
-def plot_peak_search(samples_csv: str | Path, fit_csv: str | Path, out_pdf: str | Path) -> None:
+def plot_peak_search(samples_csv: str | Path, fit_csv: str | Path, out_path: str | Path) -> None:
     samples = read_csv_rows(samples_csv)
     fit_rows = read_csv_rows(fit_csv)
     if not fit_rows:
@@ -554,4 +554,4 @@ def plot_peak_search(samples_csv: str | Path, fit_csv: str | Path, out_pdf: str 
     ax.set_xlabel(r"$\log_2 M$")
     ax.set_ylabel("entropy (bits)")
     ax.legend(frameon=False)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)

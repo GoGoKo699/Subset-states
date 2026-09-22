@@ -36,7 +36,7 @@ def fit_line(x: np.ndarray, y: np.ndarray) -> dict[str, float]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--table", type=Path, default=ROOT / "data" / "table_i_peaks.csv")
-    parser.add_argument("--outdir", type=Path, default=ROOT / "outputs" / "fig2")
+    parser.add_argument("--outdir", type=Path, default=ROOT / "generated" / "full" / "fig2")
     args = parser.parse_args()
     args.outdir.mkdir(parents=True, exist_ok=True)
 
@@ -63,7 +63,7 @@ def main() -> None:
         {"quantity": "S_n", **fit_line(n, S_n)},
     ]
     write_rows(args.outdir / "fig2_linear_fit_summary.csv", fits, fits[0].keys())
-    plot_fig2(args.outdir, args.outdir / "fig2_peak_scaling.pdf", write_fit_summary=False)
+    plot_fig2(args.outdir, args.outdir / "fig2_peak_scaling.png", write_fit_summary=False)
 
 
 if __name__ == "__main__":

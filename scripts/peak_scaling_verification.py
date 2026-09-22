@@ -42,7 +42,7 @@ def read_schedule(path: Path) -> dict[int, dict[str, float | int]]:
     }
 
 
-def plot_one(n: int, rows: list[dict], fit: dict, out_pdf: Path) -> None:
+def plot_one(n: int, rows: list[dict], fit: dict, out_path: Path) -> None:
     apply_journal_style()
     fig, ax = plt.subplots(figsize=(4.7, 3.6))
     m = np.asarray([row["m"] for row in rows], dtype=float)
@@ -59,7 +59,7 @@ def plot_one(n: int, rows: list[dict], fit: dict, out_pdf: Path) -> None:
     ax.set_ylabel(r"$S_{N,M}$")
     ax.set_title(fr"local peak check, $n={n}$")
     ax.legend(frameon=False)
-    save_figure(fig, out_pdf)
+    save_figure(fig, out_path)
 
 
 def main() -> None:
@@ -74,7 +74,7 @@ def main() -> None:
     parser.add_argument("--span", type=float, default=None)
     parser.add_argument("--seed", type=int, default=20250605)
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--outdir", type=Path, default=ROOT / "outputs" / "peak_verification")
+    parser.add_argument("--outdir", type=Path, default=ROOT / "generated" / "full" / "peak_verification")
     args = parser.parse_args()
 
     table = read_table_i(args.table)
@@ -131,7 +131,7 @@ def main() -> None:
         fit["S_peak_minus_table_S_n"] = float(fit["S_peak"] - job["table_S_n"])
         write_rows(args.outdir / f"peak_verification_n{job['n']}_samples.csv", rows, rows[0].keys())
         write_rows(args.outdir / f"peak_verification_n{job['n']}_fit.csv", [fit], fit.keys())
-        plot_one(job["n"], rows, fit, args.outdir / f"peak_verification_n{job['n']}.pdf")
+        plot_one(job["n"], rows, fit, args.outdir / f"peak_verification_n{job['n']}.png")
         summary.append(fit)
     write_rows(args.outdir / "peak_verification_summary.csv", summary, summary[0].keys())
 

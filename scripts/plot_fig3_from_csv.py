@@ -18,7 +18,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--bins", type=int, default=500)
     args = parser.parse_args()
-    out = args.out if args.out is not None else args.data_dir / "fig3_spectral_bulk.pdf"
+    out = args.out if args.out is not None else ROOT / "generated" / "figures" / "fig3" / "fig3_spectral_bulk.png"
     plot_fig3(args.data_dir, out, bins=args.bins)
 
 

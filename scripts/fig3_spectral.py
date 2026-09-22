@@ -28,7 +28,7 @@ def main() -> None:
     parser.add_argument("--m", type=int, default=None)
     parser.add_argument("--seed", type=int, default=20250604)
     parser.add_argument("--bins", type=int, default=500)
-    parser.add_argument("--outdir", type=Path, default=ROOT / "outputs" / "fig3")
+    parser.add_argument("--outdir", type=Path, default=ROOT / "generated" / "full" / "fig3")
     args = parser.parse_args()
     args.outdir.mkdir(parents=True, exist_ok=True)
 
@@ -79,7 +79,7 @@ def main() -> None:
             "bulk_max",
         ],
     )
-    plot_fig3(args.outdir, args.outdir / "fig3_spectral_bulk.pdf", bins=args.bins)
+    plot_fig3(args.outdir, args.outdir / "fig3_spectral_bulk.png", bins=args.bins)
 
 
 if __name__ == "__main__":

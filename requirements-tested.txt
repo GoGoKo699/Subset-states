@@ -1,5 +1,5 @@
-# Environment used for the publication-release validation on 2026-08-18.
-Python==3.13.5
+# Dependencies tested during the Markdown cleanup on 2026-09-22.
+# Interpreter: Python 3.12.14 (do not install Python as a pip package).
 numpy==2.3.5
 scipy==1.17.0
 matplotlib==3.10.8

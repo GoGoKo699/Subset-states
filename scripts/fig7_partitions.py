@@ -27,7 +27,7 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=20250604)
     parser.add_argument("--bins", type=int, default=100)
-    parser.add_argument("--outdir", type=Path, default=ROOT / "outputs" / "fig7")
+    parser.add_argument("--outdir", type=Path, default=ROOT / "generated" / "full" / "fig7")
     args = parser.parse_args()
     args.outdir.mkdir(parents=True, exist_ok=True)
     m = args.m if args.m is not None else PEAK_M[args.n]
@@ -75,7 +75,7 @@ def main() -> None:
         },
     ]
     write_rows(args.outdir / "fig7_partition_summary.csv", summary_rows, summary_rows[0].keys())
-    plot_fig7(args.outdir, args.outdir / "fig7_partitions.pdf", n=args.n, bins=args.bins)
+    plot_fig7(args.outdir, args.outdir / "fig7_partitions.png", n=args.n, bins=args.bins)
 
 
 if __name__ == "__main__":
