@@ -20,6 +20,7 @@ Start with the manuscript for derivations, the reproducibility guide for experim
 | [Manuscript integration record](paper/INTEGRATION.md) | Source identity, content coverage, conversion choices, and audit annotations |
 | [Research notes](docs/RESEARCH.md) | Concise mathematical guide and additional audit derivations |
 | [Sanity check](docs/SANITY_CHECK.md) | Findings, corrections, and limits of the validation |
+| [Final repository review](validation/RELEASE_CHECK.md) | Final science, mathematical fidelity, visual layout, and citation checks |
 | [Provenance](PROVENANCE.md) | What the released data can and cannot substantiate |
 | [Reproducibility](docs/REPRODUCIBILITY.md) | Commands, environments, and computational costs |
 | [References](docs/REFERENCES.md) | Verified primary sources and the open novelty question |

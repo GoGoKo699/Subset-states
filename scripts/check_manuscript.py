@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections import Counter
 import csv
 import hashlib
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
@@ -12,6 +13,26 @@ import sys
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class ScriptTagCheck(HTMLParser):
+    """Catch broken nested indices/exponents before Markdown is published."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.stack: list[str] = []
+        self.errors: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list) -> None:
+        if tag in {'sub', 'sup'}:
+            self.stack.append(tag)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in {'sub', 'sup'}:
+            if not self.stack or self.stack[-1] != tag:
+                self.errors.append(f'mismatched manuscript typography tag: {tag}')
+            else:
+                self.stack.pop()
 
 
 def anchors(content: str) -> set[str]:
@@ -57,6 +78,11 @@ def validate(root: Path = ROOT) -> list[str]:
         errors.append('manuscript equation markers must appear once each in source order')
     if '```' in content or '`' in content:
         errors.append('manuscript mathematics must use readable typography, not code formatting')
+    typography = ScriptTagCheck()
+    typography.feed(content)
+    errors.extend(typography.errors)
+    if typography.stack:
+        errors.append('unclosed manuscript subscript/superscript tags')
     references = re.findall(r'^\*\*\[(\d+)\]\*\*', content, re.M)
     if references != [str(n) for n in range(1, counts['references'] + 1)]:
         errors.append('manuscript bibliography entries must appear once each in source order')

@@ -133,7 +133,7 @@ The state is
 
 <a id="eq-11"></a>
 
-> **(11)** |A⟩ = ∑<sub>a,b = 0</sub><sup>d−1</sup> (C<sub>A</sub>)<sub>ab</sub> |a⟩<sub>L</sub> |b⟩<sub>R</sub>,
+> **(11)** |A⟩ = ∑<sub>a,b = 0</sub><sup>d−1</sup> (C<sub>A</sub>)<sub>ab</sub> |a⟩<sub>L</sub> |b⟩<sub>R</sub>.
 
 Since C<sub>A</sub> has real entries, its right reduced density matrix is
 
