@@ -12,7 +12,11 @@ The final edits distinguish the released sampled trajectories from retained hist
 
 The manuscript now follows the GitHub-native mathematics style of [Hopf-Frame-Compilation](https://github.com/GoGoKo699/Hopf-Frame-Compilation). Its 88 numbered equations and two abstract displays use mathematical fences; inline expressions use matching mathematical notation. Fractions, sums, radicals, matrices, and indices are typeset, and long displays use aligned rows. Equation numbers and reference anchors are retained. The same notation is used throughout the supporting research and audit documents.
 
-The native-math revision is awaiting its final inspection in GitHub's actual renderer on the review branch. This replaces the preceding Unicode/HTML layout; previous layout measurements do not establish this revision's rendering quality. No standalone TeX source or LaTeX build is required. A Markdown viewer needs math support to reproduce the rendered layout.
+The final revision was inspected in GitHub's actual Markdown renderer at a desktop viewport of 1363 × 936 pixels, with a 929-pixel manuscript column. The manuscript rendered all 90 display formulas and 337 inline formulas, with no unrendered mathematical expressions, raw dollar delimiters, renderer error messages, or horizontal overflow in paragraphs, equations, tables, or images. All seven figures loaded and all 11 table rows were retained. Visual inspection included the mean-state equations (17)–(22) and the long appendix expansion (76). The research notes rendered all 14 display formulas and 103 inline formulas with the same checks passing.
+
+The preview exposed three compatibility issues that were corrected before delivery: an operator-name macro rejected by the renderer, equation tags that produced malformed vertical layouts, and ordinary inline delimiters that allowed Markdown to consume braces or parse subscripts as emphasis. The final documents use upright operator text, explicit equation labels, and GitHub's protected dollar-and-backtick inline syntax. The repository checks guard the first two regressions; rendered inspection remains necessary to assess complete layout and inline parsing.
+
+These measurements describe the inspected desktop layout, not every browser or viewport. No standalone TeX source or LaTeX build is required. A Markdown viewer needs math support to reproduce the rendered layout.
 
 ## Automated verification
 
