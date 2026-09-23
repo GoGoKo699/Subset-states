@@ -4,7 +4,13 @@ How does entanglement change when an equal-positive-amplitude quantum state occu
 
 This repository contains the [complete Markdown manuscript](PAPER.md), exact finite-ensemble formulas, numerical experiments, and released evidence for that question. The manuscript includes its proofs, appendices, figures and captions, numerical table, author declarations, and full bibliography. **The exact mean-state and purity results survive the September 2026 sanity check. The asymptotic location of the von Neumann entropy maximum and the novelty of the revised research contribution remain unresolved.**
 
-The related public preprint is [*Arithmetic sequences as quantum states* (2025), arXiv:2501.06292v1](https://arxiv.org/abs/2501.06292v1), by Ruge Lin, Germán Sierra, and José I. Latorre. “Support-size entanglement trajectories of random subset states” was the working title of a later revision; it is not the title of the current arXiv record checked on 22 September 2026.
+The related public preprint is [*Arithmetic sequences as quantum states* (2025), arXiv:2501.06292v1](https://arxiv.org/abs/2501.06292v1), by Ruge Lin, Germán Sierra, and José I. Latorre. “Support-size entanglement trajectories of random subset states” was the working title of a later revision; it is not the title of the current arXiv record checked on 23 September 2026.
+
+## When to use this repository
+
+Use this project to study **random subset states, support size and bipartite entanglement**, or to reproduce equal-positive-amplitude state experiments. It provides exact mean reduced states and purity formulas for fixed-cardinality supports, entropy bounds, finite spectral and Rényi-entropy comparisons, and almost-prime state controls that match cardinality and low-bit residues.
+
+Start with the manuscript for derivations, the reproducibility guide for experiments, and the provenance record before reusing numerical results. The [reader and LLM guide](llms.md) maps these topics to the relevant source files and their limits.
 
 ## Read the project
 
@@ -17,6 +23,7 @@ The related public preprint is [*Arithmetic sequences as quantum states* (2025),
 | [Provenance](PROVENANCE.md) | What the released data can and cannot substantiate |
 | [Reproducibility](docs/REPRODUCIBILITY.md) | Commands, environments, and computational costs |
 | [References](docs/REFERENCES.md) | Verified primary sources and the open novelty question |
+| [How to cite](docs/CITING.md) | Public arXiv citation and attribution for the exact code or data used |
 
 All research prose is Markdown with plain-text or Unicode mathematics. There is no TeX source, bibliography build, or PDF workflow. Python code, CSV evidence, PNG figures, and machine-readable metadata retain their useful formats.
 
@@ -60,4 +67,8 @@ The historical command name is retained for compatibility. New outputs go under 
 
 This is a research repository, not a submission-readiness certificate. The original global searches, especially n = 22–30, have not been reconstructed. Small changes in fitted slopes when dropping those rows do not resolve that provenance gap. Broader novelty claims require comparison with existing sparse-state and fixed-size subset-state results.
 
-Use [CITATION.cff](CITATION.cff) for the public preprint, and cite a specific repository commit when using this revised implementation or data. The existing [MIT license](LICENSE) and author attribution are preserved.
+Please cite the public arXiv paper when using this work:
+
+> Ruge Lin, Germán Sierra, and José I. Latorre. *Arithmetic sequences as quantum states*. arXiv:2501.06292 [quant-ph] (2025). [doi:10.48550/arXiv.2501.06292](https://doi.org/10.48550/arXiv.2501.06292).
+
+For this revised implementation, manuscript, or released data, also identify the repository commit and the files used. See [How to cite](docs/CITING.md) for examples and [CITATION.cff](CITATION.cff) for machine-readable metadata. The existing [MIT license](LICENSE) and author attribution are preserved.

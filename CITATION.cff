@@ -3,8 +3,15 @@ message: "Please cite the public preprint and the repository commit used."
 title: "Support-size entanglement trajectories of random subset states: code and data"
 version: "1.0.0rc2"
 repository-code: "https://github.com/GoGoKo699/Subset-states"
-url: "https://arxiv.org/abs/2501.06292"
+url: "https://github.com/GoGoKo699/Subset-states"
 license: MIT
+keywords:
+  - subset states
+  - quantum entanglement
+  - support size
+  - random quantum states
+  - purity
+  - arithmetic quantum states
 authors:
   - family-names: Lin
     given-names: Ruge
@@ -19,6 +26,7 @@ preferred-citation:
   type: article
   title: "Arithmetic sequences as quantum states"
   year: 2025
+  doi: "10.48550/arXiv.2501.06292"
   authors:
     - family-names: Lin
       given-names: Ruge

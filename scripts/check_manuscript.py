@@ -52,9 +52,11 @@ def validate(root: Path = ROOT) -> list[str]:
     for heading in ['Data availability', 'Acknowledgements', 'Conflict of interest']:
         if f'\n## {heading}\n' not in content:
             errors.append(f'missing manuscript declaration: {heading}')
-    equations = re.findall(r'^\*\*\((\d+)\)\*\*$', content, re.M)
+    equations = re.findall(r'^> \*\*\((\d+)\)\*\* ', content, re.M)
     if equations != [str(n) for n in range(1, counts['numbered_equations'] + 1)]:
         errors.append('manuscript equation markers must appear once each in source order')
+    if '```' in content or '`' in content:
+        errors.append('manuscript mathematics must use readable typography, not code formatting')
     references = re.findall(r'^\*\*\[(\d+)\]\*\*', content, re.M)
     if references != [str(n) for n in range(1, counts['references'] + 1)]:
         errors.append('manuscript bibliography entries must appear once each in source order')
