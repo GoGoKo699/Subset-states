@@ -6,7 +6,7 @@
 
 An independent review found no blocking mathematical error in the exact mean reduced state, average purity, asymptotic expansions and entropy bounds, or residue-ceiling proof. A separate comparison of the typographic revision against the preceding Markdown edition checked all 88 numbered equations, both abstract displays, and the inline mathematics. No changed exponent, missing term, altered inequality, misplaced index, or fraction-scope error was found.
 
-The final edits distinguish the released sampled trajectories from retained historical peak estimates for $n=10\text{–}30$ in the abstract, introduction, peak discussion, and conclusion. The text no longer suggests that an upward finite-size trend identifies the $3/4$ purity boundary as an entropy-peak limit. Equation (12) explicitly states its real-coefficient assumption. These changes leave the reported numerical values and mathematical results intact.
+The final edits distinguish the released sampled trajectories from retained historical peak estimates for $`n=10\text{–}30`$ in the abstract, introduction, peak discussion, and conclusion. The text no longer suggests that an upward finite-size trend identifies the $`3/4`$ purity boundary as an entropy-peak limit. Equation (12) explicitly states its real-coefficient assumption. These changes leave the reported numerical values and mathematical results intact.
 
 ## Rendered layout
 
@@ -19,9 +19,9 @@ The native-math revision is awaiting its final inspection in GitHub's actual ren
 | Check | Result |
 |---|---|
 | Unit and regression suite | 39 tests passed |
-| Exhaustive small systems | 65,550 nonempty supports at $n=2$ and $n=4$ checked |
-| Exact purity vs enumeration | Maximum absolute discrepancy $1.12\times10^{-15}$ or less |
-| Retained peak table and derived fits | All 11 rows consistent; maximum discrepancy $3.56\times10^{-15}$ or less |
+| Exhaustive small systems | 65,550 nonempty supports at $`n=2`$ and $`n=4`$ checked |
+| Exact purity vs enumeration | Maximum absolute discrepancy $`1.12\times10^{-15}`$ or less |
+| Retained peak table and derived fits | All 11 rows consistent; maximum discrepancy $`3.56\times10^{-15}`$ or less |
 | Residue-control summaries | All 12,000 observations across 12 groups checked |
 | Seed replay | 36 sampled supports reproduced |
 | Dense-bulk implementation | 16,660 parameter pairs checked against the stated formula |

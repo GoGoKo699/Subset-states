@@ -25,6 +25,7 @@ def validate_math(content: str) -> list[str]:
         errors.append('unclosed native math fence')
     prose = MATH_BLOCK.sub('', content)
     prose = re.sub(r'^```.*?^```\s*$', '', prose, flags=re.M | re.S)
+    prose = re.sub(r'\$`([^`\n]+)`\$', r'$\1$', prose)
     prose = re.sub(r'`[^`\n]*`', '', prose)
     expressions = list(blocks)
     for line in prose.splitlines():
@@ -108,7 +109,8 @@ def validate(root: Path = ROOT) -> list[str]:
         pattern = rf'<a id="eq-{number}"></a>\s*```math\n(?:(?!```).)*\\qquad\\text\{{\({number}\)\}}\s*```'
         if not re.search(pattern, content, re.S):
             errors.append(f'equation {number} is not paired with its stable anchor')
-    if '`' in MATH_BLOCK.sub('', content) or re.search(r'</?(?:sub|sup)>', content):
+    prose = re.sub(r'\$`([^`\n]+)`\$', '', MATH_BLOCK.sub('', content))
+    if '`' in prose or re.search(r'</?(?:sub|sup)>', content):
         errors.append('manuscript formulas must use native math, not code or HTML indices')
     errors.extend(validate_math(content))
     references = re.findall(r'^\*\*\[(\d+)\]\*\*', content, re.M)

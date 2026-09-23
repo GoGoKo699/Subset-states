@@ -1,6 +1,6 @@
 # Repository working rules
 
-- Keep research prose and audit reports in Markdown. Following the requested Hopf-Frame-Compilation style, use GitHub-native math fences for display equations and dollar-delimited inline mathematics. TeX-style math syntax inside Markdown is allowed; standalone TeX sources, BibTeX, PDF deliverables, and a LaTeX build dependency remain excluded. Preserve equation anchors and numbering. Check the rendered layout after equation edits.
+- Keep research prose and audit reports in Markdown. Following the requested Hopf-Frame-Compilation style, use GitHub-native math fences for display equations and dollar-delimited inline mathematics with backticks inside the delimiters to protect braces and underscores from Markdown parsing. TeX-style math syntax inside Markdown is allowed; standalone TeX sources, BibTeX, PDF deliverables, and a LaTeX build dependency remain excluded. Preserve equation anchors and numbering. Check the rendered layout after equation edits.
 - Preserve the existing license and author attribution.
 - Maintain `PAPER.md` as the complete manuscript, including its proofs, appendices, figure captions, declarations, and bibliography. Keep the manuscript inventory and source record in sync with intentional structural changes; use the research notes as a companion, not a replacement for paper content.
 - Keep proved finite-ensemble identities, asymptotic consequences, heuristic approximations, finite numerical observations, and historical estimates explicitly distinguished.

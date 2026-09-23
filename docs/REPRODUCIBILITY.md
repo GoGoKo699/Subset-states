@@ -23,7 +23,7 @@ python scripts/validate_residue_results.py
 python scripts/check_repository.py
 ```
 
-The test suite covers exact identities, API input rejection, basis ordering, numerical entropy behavior, validator failure cases, and figure-output isolation. The comprehensive validator independently enumerates all nonempty supports for $n = 2$ and $n = 4$, compares against production routines, reads the actual peak table, and checks released residue summaries against the 12,000 observations. The residue command is a focused view of those checks. Default validators print Markdown and do not modify released evidence.
+The test suite covers exact identities, API input rejection, basis ordering, numerical entropy behavior, validator failure cases, and figure-output isolation. The comprehensive validator independently enumerates all nonempty supports for $`n = 2`$ and $`n = 4`$, compares against production routines, reads the actual peak table, and checks released residue summaries against the 12,000 observations. The residue command is a focused view of those checks. Default validators print Markdown and do not modify released evidence.
 
 To save a new report:
 
@@ -31,7 +31,7 @@ To save a new report:
 python scripts/final_scientific_validation.py --output generated/scientific-validation.md
 ```
 
-Choose a new Markdown path; report writing rejects existing files and protected evidence destinations. Acceptance checks remain active under `python -O`. A passing report is limited to the checks it lists: it does not reconstruct the high-$n$ global searches or establish novelty.
+Choose a new Markdown path; report writing rejects existing files and protected evidence destinations. Acceptance checks remain active under `python -O`. A passing report is limited to the checks it lists: it does not reconstruct the high-$`n`$ global searches or establish novelty.
 
 The repository check verifies frozen evidence hashes, local Markdown link paths, and the absence of standalone TeX/PDF artifacts. It does not fetch external links or inspect missing historical records.
 
@@ -55,7 +55,7 @@ A modest example is:
 python scripts/peak_scaling_verification.py --n-values 10 --samples 20 --points 7
 ```
 
-This samples a neighborhood around a supplied Table I value, then fits a quadratic in $\log_2 M$. It does not search the entire support-size range. The original global searches for the historical peaks are not part of `--full` either.
+This samples a neighborhood around a supplied Table I value, then fits a quadratic in $`\log_2 M`$. It does not search the entire support-size range. The original global searches for the historical peaks are not part of `--full` either.
 
 Inspect a workload without executing it:
 
@@ -63,7 +63,7 @@ Inspect a workload without executing it:
 python scripts/peak_scaling_verification.py --all-table --dry-run
 ```
 
-The default schedule reaches dimensions that can be expensive with dense exact entropy. A $d \times d$ real coefficient matrix needs $8N$ bytes before copies, reduced states, or SVD workspace; a complex state vector needs $16N$ bytes. At $n = 30$ these alone are 8 GiB and 16 GiB. Dense SVD time grows roughly as $N^{3/2}$, multiplied by support sizes and sample counts. The September cleanup did not run those high-$n$ searches or the full figure simulations.
+The default schedule reaches dimensions that can be expensive with dense exact entropy. A $`d \times d`$ real coefficient matrix needs $`8N`$ bytes before copies, reduced states, or SVD workspace; a complex state vector needs $`16N`$ bytes. At $`n = 30`$ these alone are 8 GiB and 16 GiB. Dense SVD time grows roughly as $`N^{3/2}`$, multiplied by support sizes and sample counts. The September cleanup did not run those high-$`n`$ searches or the full figure simulations.
 
 ## Evidence protection
 

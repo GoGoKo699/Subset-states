@@ -235,7 +235,7 @@ def markdown_report(title: str, sections: dict[str, dict[str, float | int]], sco
     for name, values in sections.items():
         lines.extend([f"## {name}", "", "| Check | Result |", "| --- | ---: |"])
         for key, value in values.items():
-            label = key.replace("log2_M_n", r"$\log_2 M_n$").replace("S_n", "$S_n$")
+            label = key.replace("log2_M_n", r"$`\log_2 M_n`$").replace("S_n", "$`S_n`$")
             # Preserve mathematical subscripts while spelling out ordinary keys.
             label = label.replace("_slope", " slope").replace("_intercept", " intercept")
             if "$" not in label:
@@ -243,7 +243,7 @@ def markdown_report(title: str, sections: dict[str, dict[str, float | int]], sco
             number = f"{value:.12g}"
             if "e" in number:
                 mantissa, exponent = number.split("e")
-                number = rf"${mantissa}\times10^{{{int(exponent)}}}$"
+                number = rf"$`{mantissa}\times10^{{{int(exponent)}}}`$"
             lines.append(f"| {label} | {number} |")
         lines.append("")
     return "\n".join(lines)

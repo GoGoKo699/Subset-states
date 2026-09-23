@@ -30,16 +30,16 @@ All research prose is Markdown with GitHub-native rendered mathematics: inline f
 
 ## What is established?
 
-For an even number of qubits $n$, write $N = 2^n$ and $d = 2^{n/2}$. Choose $M$ distinct basis labels uniformly, assign each amplitude $1/\sqrt{M}$, and split the qubits into two fixed halves.
+For an even number of qubits $`n`$, write $`N = 2^n`$ and $`d = 2^{n/2}`$. Choose $`M`$ distinct basis labels uniformly, assign each amplitude $`1/\sqrt{M}`$, and split the qubits into two fixed halves.
 
 | Result | Status |
 |---|---|
-| Exact ensemble-mean reduced state and average purity | Derived by counting; independently checked on all nonempty supports at $n = 4$ |
-| Mean entropy at least $\frac{n}{2} - 1 - o(1)$, for $M = cN^\gamma$ and $\frac{1}{2} < \gamma < \frac{3}{4}$ | Consequence of the exact purity formula, for fixed $c > 0$ |
-| Purity-minimizing support $M = 2^{-1/3}N^{2/3} + O(1)$ | Analytic result; does not locate the von Neumann entropy maximum |
-| Rise–peak–fall curves and retained peak estimates through $n = 30$ | Finite numerical evidence; original global-search records are incomplete |
+| Exact ensemble-mean reduced state and average purity | Derived by counting; independently checked on all nonempty supports at $`n = 4`$ |
+| Mean entropy at least $`\frac{n}{2} - 1 - o(1)`$, for $`M = cN^\gamma`$ and $`\frac{1}{2} < \gamma < \frac{3}{4}`$ | Consequence of the exact purity formula, for fixed $`c > 0`$ |
+| Purity-minimizing support $`M = 2^{-1/3}N^{2/3} + O(1)`$ | Analytic result; does not locate the von Neumann entropy maximum |
+| Rise–peak–fall curves and retained peak estimates through $`n = 30`$ | Finite numerical evidence; original global-search records are incomplete |
 | Hypergeometric diagonal-entropy bound and low-bit residue ceiling | Exact bounds with stated ensemble/cut assumptions |
-| Almost-prime deficits after matching cardinality and residues | Finite comparisons at $n = 14$; no unique arithmetic fingerprint established |
+| Almost-prime deficits after matching cardinality and residues | Finite comparisons at $`n = 14`$; no unique arithmetic fingerprint established |
 
 ![Released support-size trajectory](outputs/fig1/fig1_concentration.png)
 
@@ -66,7 +66,7 @@ The historical command name is retained for compatibility. New outputs go under 
 
 ## Scope and citation
 
-This is a research repository, not a submission-readiness certificate. The original global searches, especially $n = 22$–$30$, have not been reconstructed. Small changes in fitted slopes when dropping those rows do not resolve that provenance gap. Broader novelty claims require comparison with existing sparse-state and fixed-size subset-state results.
+This is a research repository, not a submission-readiness certificate. The original global searches, especially $`n = 22`$–$`30`$, have not been reconstructed. Small changes in fitted slopes when dropping those rows do not resolve that provenance gap. Broader novelty claims require comparison with existing sparse-state and fixed-size subset-state results.
 
 Please cite the public arXiv paper when using this work:
 
