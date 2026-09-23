@@ -2,7 +2,7 @@
 
 How does entanglement change when an equal-positive-amplitude quantum state occupies more computational-basis labels? A single label and the full basis both give product states. Random supports in between can give high bipartite entanglement.
 
-This repository contains exact finite-ensemble formulas, numerical experiments, and released evidence for that question. **The exact mean-state and purity results survive the September 2026 sanity check. The asymptotic location of the von Neumann entropy maximum and the novelty of the revised research contribution remain unresolved.**
+This repository contains the [complete Markdown manuscript](PAPER.md), exact finite-ensemble formulas, numerical experiments, and released evidence for that question. The manuscript includes its proofs, appendices, figures and captions, numerical table, author declarations, and full bibliography. **The exact mean-state and purity results survive the September 2026 sanity check. The asymptotic location of the von Neumann entropy maximum and the novelty of the revised research contribution remain unresolved.**
 
 The related public preprint is [*Arithmetic sequences as quantum states* (2025), arXiv:2501.06292v1](https://arxiv.org/abs/2501.06292v1), by Ruge Lin, Germán Sierra, and José I. Latorre. “Support-size entanglement trajectories of random subset states” was the working title of a later revision; it is not the title of the current arXiv record checked on 22 September 2026.
 
@@ -10,7 +10,9 @@ The related public preprint is [*Arithmetic sequences as quantum states* (2025),
 
 | Document | Purpose |
 |---|---|
-| [Research notes](docs/RESEARCH.md) | Definitions, exact formulas and proofs, approximations, and figures |
+| [Full manuscript](PAPER.md) | Complete paper, including all four appendices and 33 references |
+| [Manuscript integration record](paper/INTEGRATION.md) | Source identity, content coverage, conversion choices, and audit annotations |
+| [Research notes](docs/RESEARCH.md) | Concise mathematical guide and additional audit derivations |
 | [Sanity check](docs/SANITY_CHECK.md) | Findings, corrections, and limits of the validation |
 | [Provenance](PROVENANCE.md) | What the released data can and cannot substantiate |
 | [Reproducibility](docs/REPRODUCIBILITY.md) | Commands, environments, and computational costs |

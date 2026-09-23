@@ -1,6 +1,6 @@
 # References and research positioning
 
-Primary records checked on 22 September 2026. This is a targeted literature check, not a completed novelty assessment or a reconstruction of the absent revised manuscript bibliography.
+Primary records checked on 22 September 2026. This is a targeted literature check, not a completed novelty assessment. The recovered manuscript's [full 33-entry bibliography](../PAPER.md#references) is maintained separately; its inclusion does not extend this verification to every cited work.
 
 | Source | Role in this project |
 |---|---|
