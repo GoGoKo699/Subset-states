@@ -6,7 +6,7 @@ This document describes the evidence present in the repository, rather than trea
 
 | Material | What can be checked | Remaining limitation |
 |---|---|---|
-| Exact mean-state, purity, diagonal-entropy and residue formulas | Counting proofs in [research notes](docs/RESEARCH.md), independent enumeration, production-code comparisons | Enumeration alone is not a proof for arbitrary size |
+| Exact mean-state, purity, diagonal-entropy and residue formulas | Complete proofs in the [manuscript](PAPER.md), companion [research notes](docs/RESEARCH.md), independent enumeration, production-code comparisons | Enumeration alone is not a proof for arbitrary size |
 | `data/table_i_peaks.csv` | Transcription of Table I in the [2025 preprint](https://arxiv.org/html/2501.06292v1), arithmetic regressions, agreement with released derived tables | No complete original global-search records, raw peak samples, search uncertainty or full execution provenance |
 | `outputs/peak_verification/` | Local grids and quadratic fits for n = 10, 12, 14, 16, 18, 20 | These are neighborhood checks around given centers, not global rediscovery; files named `samples` hold aggregate statistics at each M |
 | `outputs/fig1/` | Released individual entropy samples and summaries | Support labels and a full original execution manifest are absent |
@@ -40,6 +40,10 @@ A remaining deficit means that uniform placement conditional on those counts doe
 
 ## Historical material
 
-The old manuscript-readiness review, bibliography audit, duplicated text validation reports, and PDF copies of PNG figures were removed from the active tree. They remain available at the starting commit above. No manuscript source or complete revised bibliography was present in that tree, so this cleanup does not claim a lossless conversion of an unseen manuscript.
+The old manuscript-readiness review, bibliography audit, duplicated text validation reports, and PDF copies of PNG figures were removed from the active tree. They remain available at the starting commit above. No manuscript source or complete revised bibliography was present in that tree during the initial cleanup.
+
+On 23 September 2026, the complete revised manuscript package dated 21 August 2026 was recovered from the project files. Its text, mathematics, table, seven figures and captions, four appendices, declarations, and 33 references are now integrated in [PAPER.md](PAPER.md). The [integration record](paper/INTEGRATION.md) identifies the source snapshots and explains the scientific annotations. This recovery supplies the complete written manuscript; it does not supply the missing original peak-search records.
+
+The PNG images under `paper/figures/` are direct renderings of that manuscript's seven supplied figures, with separate checksums in [the manuscript manifest](validation/manuscript_manifest.json). They preserve the manuscript presentation, including its revised Figure 2. The released CSV/PNG evidence under `data/` and `outputs/`, and its original checksum manifest, remain unchanged.
 
 The historical best-of-random-candidates experiment remains under [exploratory](exploratory/best_of_random_candidates/README.md). It selects among independent random candidates; it is not a greedy construction.

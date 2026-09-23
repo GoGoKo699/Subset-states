@@ -9,13 +9,15 @@ import re
 import sys
 from urllib.parse import unquote, urlsplit
 
+from check_manuscript import validate as validate_manuscript
+
 ROOT = Path(__file__).resolve().parents[1]
 SKIP = {'.git', '.venv', 'venv', 'env', 'generated', '__pycache__', 'build', 'dist'}
 FORBIDDEN = {'.tex', '.bib', '.sty', '.cls', '.aux', '.bbl', '.blg', '.pdf'}
 
 
 def main() -> None:
-    errors = []
+    errors = validate_manuscript()
     manifest = json.loads((ROOT / 'validation/evidence_sha256.json').read_text())
     for name, expected in manifest['files'].items():
         path = ROOT / name
@@ -45,7 +47,8 @@ def main() -> None:
         print('\n'.join(errors), file=sys.stderr)
         raise SystemExit(1)
     docs = sum(p.suffix == '.md' for p in files)
-    print(f'PASS: {len(manifest["files"])} evidence checksums; {docs} Markdown documents; local link paths; no TeX/PDF artifacts.')
+    print(f'PASS: {len(manifest["files"])} evidence checksums; {docs} Markdown documents; '
+          'manuscript inventory, figures, table and fragments; local link paths; no TeX/PDF artifacts.')
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 # Research notes: equal-positive-amplitude subset states
 
-These notes state the mathematical model, derive the exact results represented in the code, and separate them from approximations and numerical evidence. They are the maintained research text for this repository. Entropies and logarithms use bits unless `ln` is written.
+These notes are a concise companion to the [complete manuscript](../PAPER.md). They state the mathematical model, derive the exact results represented in the code, and separate them from approximations and numerical evidence. They also retain additional audit derivations, including finite-size purity minimization. Entropies and logarithms use bits unless `ln` is written.
 
 ## 1. Model and endpoints
 

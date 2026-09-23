@@ -1,0 +1,552 @@
+{
+  "schema_version": 1,
+  "document": "PAPER.md",
+  "source_package_date": "2026-08-21",
+  "integration_date": "2026-09-23",
+  "sources": [
+    {
+      "name": "Subset_States_revised_manuscript.zip",
+      "bytes": 794916,
+      "sha256": "c35d68a8d297027c67e77305a3c52075ba19e5079136d5dde103158477815289"
+    },
+    {
+      "name": "Subset_States_main_revised.tex",
+      "bytes": 60399,
+      "sha256": "47635a324efe9098917d6750c9ccb44dab882631a1c3b6889d124780f2b38afd"
+    },
+    {
+      "name": "Subset_States_main_revised.pdf",
+      "bytes": 616537,
+      "sha256": "64e700efe15404ba792be10c4875060f2eed5ee181fc0b989f7fd521ddf2cd94"
+    },
+    {
+      "name": "Citations.bib",
+      "bytes": 11639,
+      "sha256": "260605ff55e23c6d8c94a5672fb5e5e9949c64d418327f03128bcb5f856b077a"
+    }
+  ],
+  "counts": {
+    "main_sections": 7,
+    "appendices": 4,
+    "unnumbered_sections": 3,
+    "subsections": 15,
+    "numbered_equations": 88,
+    "abstract_displays": 2,
+    "figures": 7,
+    "tables": 1,
+    "table_data_rows": 11,
+    "numbered_statements": 5,
+    "explicit_proof_environments": 2,
+    "informal_proof_locations": [
+      "Section 3.2 rectangle argument",
+      "Appendix C.2 complete purity count",
+      "Appendix D.1 residue ceiling proof"
+    ],
+    "references": 33,
+    "citation_groups": 29,
+    "citation_instances": 58,
+    "cross_reference_instances": 62,
+    "source_labels": 76
+  },
+  "sections": [
+    {
+      "designation": "1",
+      "title": "Introduction",
+      "anchor": "sec-introduction"
+    },
+    {
+      "designation": "2",
+      "title": "Subset states and the fixed-cardinality ensemble",
+      "anchor": "sec-model"
+    },
+    {
+      "designation": "3",
+      "title": "Exact moments and compressed-support entanglement",
+      "anchor": "sec-exact-moments"
+    },
+    {
+      "designation": "4",
+      "title": "Support-size entanglement trajectory",
+      "anchor": "sec-trajectory"
+    },
+    {
+      "designation": "5",
+      "title": "Sparse-to-dense spectral mechanism",
+      "anchor": "sec-spectral-mechanism"
+    },
+    {
+      "designation": "6",
+      "title": "Structured supports: almost-prime states and Fourier comparison",
+      "anchor": "sec-structured"
+    },
+    {
+      "designation": "7",
+      "title": "Conclusions",
+      "anchor": "sec-conclusions"
+    },
+    {
+      "designation": "A",
+      "title": "Rényi-entropy trajectories",
+      "anchor": "app-renyi"
+    },
+    {
+      "designation": "B",
+      "title": "Entropy distributions over balanced cuts",
+      "anchor": "app-partitions"
+    },
+    {
+      "designation": "C",
+      "title": "Combinatorial derivations for the fixed-cardinality ensemble",
+      "anchor": "app-combinatorial-derivations"
+    },
+    {
+      "designation": "D",
+      "title": "Residue-class bound and constrained ensembles",
+      "anchor": "app-residue-proof"
+    }
+  ],
+  "source_label_destinations": {
+    "sec:introduction": "sec-introduction",
+    "sec:model": "sec-model",
+    "eq:subset-state": "eq-4",
+    "eq:full-support-product": "eq-6",
+    "eq:rho-support-matrix": "eq-12",
+    "eq:single-support-entropy": "eq-13",
+    "eq:permutation-support-maxent": "eq-14",
+    "eq:mean-entropy": "eq-15",
+    "sec:exact-moments": "sec-exact-moments",
+    "eq:indicator-factorial-moment": "eq-16",
+    "prop:mean-reduced-state": "prop-mean-reduced-state",
+    "eq:mean-reduced-state": "eq-17",
+    "eq:lambda-mf": "eq-18",
+    "eq:lambda-perp": "eq-19",
+    "thm:average-purity": "thm-average-purity",
+    "eq:exact-average-purity": "eq-23",
+    "eq:purity-rectangle-sum": "eq-24",
+    "eq:purity-power-balance": "eq-26",
+    "cor:compressed-support-entropy": "cor-compressed-support-entropy",
+    "eq:one-bit-bound": "eq-28",
+    "eq:purity-asymptotic-c": "eq-29",
+    "eq:compressed-entropy-bound": "eq-30",
+    "eq:three-quarter-purity-bound": "eq-31",
+    "eq:three-quarter-entropy-bound": "eq-32",
+    "eq:entropy-purity-jensen": "eq-34",
+    "sec:trajectory": "sec-trajectory",
+    "eq:rank-entropy-bound": "eq-35",
+    "eq:uniform-product-overlap": "eq-36",
+    "subsec:numerical-protocol": "subsec-numerical-protocol",
+    "eq:monte-carlo-mean": "eq-39",
+    "eq:page-mean": "eq-40",
+    "fig:trajectory": "fig-trajectory",
+    "subsec:peak-scaling": "subsec-peak-scaling",
+    "tab:peak-estimates": "tab-peak-estimates",
+    "eq:finite-size-peak-fits": "eq-41",
+    "fig:peak-scaling": "fig-peak-scaling",
+    "eq:effective-peak-exponent": "eq-42",
+    "sec:spectral-mechanism": "sec-spectral-mechanism",
+    "subsec:dense-description": "subsec-dense-description",
+    "fig:spectrum": "fig-spectrum",
+    "eq:dense-bulk-ansatz": "eq-43",
+    "eq:lambda-mf-simplified": "eq-44",
+    "subsec:sparse-description": "subsec-sparse-description",
+    "eq:hypergeometric-occupancy": "eq-46",
+    "eq:exact-diagonal-entropy": "eq-48",
+    "eq:diagonal-entropy-upper-bound": "eq-50",
+    "fig:approximation": "fig-approximation",
+    "sec:structured": "sec-structured",
+    "eq:residue-populations": "eq-51",
+    "prop:residue-ceiling": "prop-residue-ceiling",
+    "eq:residue-entropy-ceiling": "eq-52",
+    "eq:q-residue-ceiling": "eq-53",
+    "eq:parity-ceiling": "eq-54",
+    "eq:almost-prime-union-support": "eq-55",
+    "eq:residue-count-vector": "eq-56",
+    "eq:residue-matched-ensemble": "eq-57",
+    "eq:residue-matched-deficit": "eq-58",
+    "eq:fourier-residue-matched-deficit": "eq-59",
+    "eq:qft-positive-convention": "eq-61",
+    "fig:qft-residue-controls": "fig-qft-residue-controls",
+    "eq:cardinality-deficits-k123": "eq-62",
+    "sec:conclusions": "sec-conclusions",
+    "app:renyi": "app-renyi",
+    "eq:renyi-support": "eq-63",
+    "eq:min-entropy-support": "eq-64",
+    "fig:renyi": "fig-renyi",
+    "app:partitions": "app-partitions",
+    "fig:partition": "fig-partition",
+    "app:combinatorial-derivations": "app-combinatorial-derivations",
+    "eq:appendix-indicator-moment": "eq-69",
+    "eq:appendix-sparse-power": "eq-73",
+    "eq:appendix-background-power": "eq-74",
+    "eq:appendix-rectangle-power": "eq-75",
+    "eq:appendix-general-purity-power": "eq-76",
+    "app:residue-proof": "app-residue-proof",
+    "eq:residue-branch-decomposition": "eq-82"
+  },
+  "required_anchors": [
+    "abstract-purity-scale",
+    "abstract-entropy-bound",
+    "sec-introduction",
+    "sec-model",
+    "eq-4",
+    "eq-6",
+    "eq-12",
+    "eq-13",
+    "eq-14",
+    "eq-15",
+    "sec-exact-moments",
+    "eq-16",
+    "prop-mean-reduced-state",
+    "eq-17",
+    "eq-18",
+    "eq-19",
+    "thm-average-purity",
+    "eq-23",
+    "eq-24",
+    "eq-26",
+    "cor-compressed-support-entropy",
+    "eq-28",
+    "eq-29",
+    "eq-30",
+    "eq-31",
+    "eq-32",
+    "eq-34",
+    "sec-trajectory",
+    "eq-35",
+    "eq-36",
+    "subsec-numerical-protocol",
+    "eq-39",
+    "eq-40",
+    "fig-trajectory",
+    "subsec-peak-scaling",
+    "tab-peak-estimates",
+    "eq-41",
+    "fig-peak-scaling",
+    "eq-42",
+    "sec-spectral-mechanism",
+    "subsec-dense-description",
+    "fig-spectrum",
+    "eq-43",
+    "eq-44",
+    "subsec-sparse-description",
+    "eq-46",
+    "eq-48",
+    "eq-50",
+    "fig-approximation",
+    "sec-structured",
+    "eq-51",
+    "prop-residue-ceiling",
+    "eq-52",
+    "eq-53",
+    "eq-54",
+    "eq-55",
+    "eq-56",
+    "eq-57",
+    "eq-58",
+    "eq-59",
+    "eq-61",
+    "fig-qft-residue-controls",
+    "eq-62",
+    "sec-conclusions",
+    "app-renyi",
+    "eq-63",
+    "eq-64",
+    "fig-renyi",
+    "app-partitions",
+    "fig-partition",
+    "app-combinatorial-derivations",
+    "eq-69",
+    "eq-73",
+    "eq-74",
+    "eq-75",
+    "eq-76",
+    "app-residue-proof",
+    "eq-82",
+    "eq-1",
+    "eq-2",
+    "eq-3",
+    "eq-5",
+    "eq-7",
+    "eq-8",
+    "eq-9",
+    "eq-10",
+    "eq-11",
+    "eq-20",
+    "eq-21",
+    "eq-22",
+    "eq-25",
+    "eq-27",
+    "eq-33",
+    "eq-37",
+    "eq-38",
+    "eq-45",
+    "eq-47",
+    "eq-49",
+    "eq-60",
+    "eq-65",
+    "eq-66",
+    "eq-67",
+    "eq-68",
+    "eq-70",
+    "eq-71",
+    "eq-72",
+    "eq-77",
+    "eq-78",
+    "eq-79",
+    "eq-80",
+    "eq-81",
+    "eq-83",
+    "eq-84",
+    "eq-85",
+    "eq-86",
+    "eq-87",
+    "eq-88",
+    "ref-1",
+    "ref-2",
+    "ref-3",
+    "ref-4",
+    "ref-5",
+    "ref-6",
+    "ref-7",
+    "ref-8",
+    "ref-9",
+    "ref-10",
+    "ref-11",
+    "ref-12",
+    "ref-13",
+    "ref-14",
+    "ref-15",
+    "ref-16",
+    "ref-17",
+    "ref-18",
+    "ref-19",
+    "ref-20",
+    "ref-21",
+    "ref-22",
+    "ref-23",
+    "ref-24",
+    "ref-25",
+    "ref-26",
+    "ref-27",
+    "ref-28",
+    "ref-29",
+    "ref-30",
+    "ref-31",
+    "ref-32",
+    "ref-33",
+    "references"
+  ],
+  "figures": [
+    {
+      "number": 1,
+      "path": "paper/figures/fig1_concentration.png",
+      "sha256": "f5c3712916c8f8ea322c52e551617d2ae9311b428506d9a642809d6387f710b8",
+      "source_name": "Graph/fig1_concentration.pdf",
+      "source_sha256": "6e1d86543dc4fb9cd94e52c0cf77faab739c904fcd626349d1b17959fba36cf1"
+    },
+    {
+      "number": 2,
+      "path": "paper/figures/fig2_peak_scaling.png",
+      "sha256": "27fcd9595bbe0675159a2481af844faaacef63be149db49aa68389783e3a22f0",
+      "source_name": "Graph/fig2_peak_scaling.pdf",
+      "source_sha256": "6a2e1aba4716af8f9d166710f52ea6e266633798d0c7a10b6bf1383a77c1c35b"
+    },
+    {
+      "number": 3,
+      "path": "paper/figures/fig3_spectral_bulk.png",
+      "sha256": "42f72a2e3ad3a74e6f7b64140fa03687fc98c3ef152218c80b9867741a31660a",
+      "source_name": "Graph/fig3_spectral_bulk.pdf",
+      "source_sha256": "50e92cc2df880268792fefb08445fd5a42107fee9d32b00357f265897a60cfba"
+    },
+    {
+      "number": 4,
+      "path": "paper/figures/fig4_approximation.png",
+      "sha256": "41acbad9c461a21980aaf0bde68cbab5214814aa062ccd03ab4ca667db9ad28f",
+      "source_name": "Graph/fig4_approximation.pdf",
+      "source_sha256": "161d634f6fa64d69780110414c7f3ee958d17d2a61aa681ebc091cf73078007e"
+    },
+    {
+      "number": 5,
+      "path": "paper/figures/fig5_qft_residue_controls.png",
+      "sha256": "72a641d96fa99feeceb6caafa2e9d1847a38900dd1e1362e0cff6f62f829bdf2",
+      "source_name": "Graph/fig5_qft_residue_controls.pdf",
+      "source_sha256": "7bc036cbf34c94937b0cfa796d764d867cc85c65ffa4ec39bb6699653f2bc527"
+    },
+    {
+      "number": 6,
+      "path": "paper/figures/fig6_renyi.png",
+      "sha256": "7e03bcc7b0e7bea214e19ae1ec5c7b4c1321106599ea34ad577a22f14bad6410",
+      "source_name": "Graph/fig6_renyi.pdf",
+      "source_sha256": "b650a91ecb99b7be6ead35b9f071efebfbebf73dce0d762761dc298cd55e9959"
+    },
+    {
+      "number": 7,
+      "path": "paper/figures/fig7_partitions.png",
+      "sha256": "b448122da45d628670681d43799334050874da2b468c1958f64e914685b3af1d",
+      "source_name": "Graph/fig7_partitions.pdf",
+      "source_sha256": "48dec603387b2499ea3b265fa6c0e22db87b76092e3b6d630092f42f4bf9418e"
+    }
+  ],
+  "references": [
+    {
+      "number": 1,
+      "key": "grilo2015subset"
+    },
+    {
+      "number": 2,
+      "key": "ji2018pseudorandom"
+    },
+    {
+      "number": 3,
+      "key": "aaronson2024pseudoentanglement"
+    },
+    {
+      "number": 4,
+      "key": "jeronimo2023subsetprs"
+    },
+    {
+      "number": 5,
+      "key": "giurgicatiron2023subsetprs"
+    },
+    {
+      "number": 6,
+      "key": "lubkin1978entropy"
+    },
+    {
+      "number": 7,
+      "key": "page1993average"
+    },
+    {
+      "number": 8,
+      "key": "sen1996average"
+    },
+    {
+      "number": 9,
+      "key": "hayden2006generic"
+    },
+    {
+      "number": 10,
+      "key": "zyczkowski2001induced"
+    },
+    {
+      "number": 11,
+      "key": "nechita2007asymptotics"
+    },
+    {
+      "number": 12,
+      "key": "kumar2011entanglement"
+    },
+    {
+      "number": 13,
+      "key": "detomasi2020multifractality"
+    },
+    {
+      "number": 14,
+      "key": "nakata2020generic"
+    },
+    {
+      "number": 15,
+      "key": "vidmar2017entanglement"
+    },
+    {
+      "number": 16,
+      "key": "bianchi2022volume"
+    },
+    {
+      "number": 17,
+      "key": "murciano2022symmetry"
+    },
+    {
+      "number": 18,
+      "key": "patil2023average"
+    },
+    {
+      "number": 19,
+      "key": "latorre2013quantum"
+    },
+    {
+      "number": 20,
+      "key": "latorre2014there"
+    },
+    {
+      "number": 21,
+      "key": "garcia2020prime"
+    },
+    {
+      "number": 22,
+      "key": "nielsen2002quantum"
+    },
+    {
+      "number": 23,
+      "key": "bengtsson2017geometry"
+    },
+    {
+      "number": 24,
+      "key": "vitagliano2010"
+    },
+    {
+      "number": 25,
+      "key": "ramirez2014"
+    },
+    {
+      "number": 26,
+      "key": "lin2024entanglement"
+    },
+    {
+      "number": 27,
+      "key": "haque2022entanglement"
+    },
+    {
+      "number": 28,
+      "key": "renyi1948on"
+    },
+    {
+      "number": 29,
+      "key": "heath1978almost"
+    },
+    {
+      "number": 30,
+      "key": "chen2023quantum"
+    },
+    {
+      "number": 31,
+      "key": "lin2026subsetstatescode"
+    },
+    {
+      "number": 32,
+      "key": "renyi1961measures"
+    },
+    {
+      "number": 33,
+      "key": "mele2024introduction"
+    }
+  ],
+  "scope": "Structural inventory and source identity; semantic fidelity is reviewed separately. Source compiler files are not retained.",
+  "statements": [
+    {
+      "kind": "Proposition",
+      "number": "3.1",
+      "title": "Mean reduced state"
+    },
+    {
+      "kind": "Theorem",
+      "number": "3.2",
+      "title": "Average purity"
+    },
+    {
+      "kind": "Corollary",
+      "number": "3.3",
+      "title": "Power-law support window and optimal balance"
+    },
+    {
+      "kind": "Remark",
+      "number": "3.4",
+      "title": null
+    },
+    {
+      "kind": "Proposition",
+      "number": "6.1",
+      "title": "Residue-class entropy ceiling"
+    }
+  ]
+}
