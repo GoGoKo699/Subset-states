@@ -10,7 +10,13 @@ The [official arXiv record](https://arxiv.org/abs/2501.06292), checked on 23 Sep
 
 When using this repository's implementation, figures, data, or revised manuscript, include the repository commit as well as the paper citation. The public preprint predates some repository content, so a paper citation alone does not identify the code or evidence used.
 
-Use this prose template, replacing the bracketed fields:
+For the published release, use:
+
+> Ruge Lin, Germán Sierra, and José I. Latorre. *Subset states: support size and entanglement*, repository manuscript, code, and data. Version 1.0.0, 23 September 2026. GitHub. https://github.com/GoGoKo699/Subset-states/releases/tag/v1.0.0
+
+The release tag `v1.0.0` resolves to commit [`d3729b4d4c5e6f4441da469d626c2d998500cfb8`](https://github.com/GoGoKo699/Subset-states/tree/d3729b4d4c5e6f4441da469d626c2d998500cfb8). Identify the files or figures used alongside this citation. Its archived package and citation files retain the earlier `1.0.0rc2` labels; the metadata correction on `main` does not change the published snapshot.
+
+For a different checkout, use this prose template, replacing the bracketed fields:
 
 > Ruge Lin, Germán Sierra, and José I. Latorre. *Subset states: support size and entanglement*, repository manuscript, code, and data. GitHub, GoGoKo699/Subset-states, commit [full commit hash], [files or figure numbers used]. https://github.com/GoGoKo699/Subset-states
 
