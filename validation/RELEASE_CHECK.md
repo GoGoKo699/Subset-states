@@ -6,24 +6,22 @@
 
 An independent review found no blocking mathematical error in the exact mean reduced state, average purity, asymptotic expansions and entropy bounds, or residue-ceiling proof. A separate comparison of the typographic revision against the preceding Markdown edition checked all 88 numbered equations, both abstract displays, and the inline mathematics. No changed exponent, missing term, altered inequality, misplaced index, or fraction-scope error was found.
 
-The final edits distinguish the released sampled trajectories from retained historical peak estimates for n = 10–30 in the abstract, introduction, peak discussion, and conclusion. The text no longer suggests that an upward finite-size trend identifies the 3/4 purity boundary as an entropy-peak limit. Equation (12) explicitly states its real-coefficient assumption. These changes leave the reported numerical values and mathematical results intact.
+The final edits distinguish the released sampled trajectories from retained historical peak estimates for $n=10\text{–}30$ in the abstract, introduction, peak discussion, and conclusion. The text no longer suggests that an upward finite-size trend identifies the $3/4$ purity boundary as an entropy-peak limit. Equation (12) explicitly states its real-coefficient assumption. These changes leave the reported numerical values and mathematical results intact.
 
 ## Rendered layout
 
-The manuscript was inspected in GitHub's actual Markdown preview, including the mean-state formulas highlighted in the reported screenshot. All 90 mathematical displays now use numbered or unnumbered equation blocks with Unicode and supported subscript/superscript tags. Inline mathematics uses matching typography. Long formulas break at logical operations, with explicit grouping around fractions.
+The manuscript now follows the GitHub-native mathematics style of [Hopf-Frame-Compilation](https://github.com/GoGoKo699/Hopf-Frame-Compilation). Its 88 numbered equations and two abstract displays use mathematical fences; inline expressions use matching mathematical notation. Fractions, sums, radicals, matrices, and indices are typeset, and long displays use aligned rows. Equation numbers and reference anchors are retained. The same notation is used throughout the supporting research and audit documents.
 
-At the inspected desktop viewport of 1363 × 936 pixels, the manuscript reading column measured 929 pixels. A full-document DOM check found no horizontal overflow in the paragraphs, equation blocks, table, or images. All seven figures loaded; GitHub retained 307 subscript and 158 superscript elements, and the manuscript contained no code blocks. The equation and reference anchors remain intact.
-
-This records the actual desktop inspection; it is not a claim of testing every browser, viewport, or mobile device. The manuscript remains readable without a mathematics renderer or a document compiler.
+The native-math revision is awaiting its final inspection in GitHub's actual renderer on the review branch. This replaces the preceding Unicode/HTML layout; previous layout measurements do not establish this revision's rendering quality. No standalone TeX source or LaTeX build is required. A Markdown viewer needs math support to reproduce the rendered layout.
 
 ## Automated verification
 
 | Check | Result |
 |---|---|
 | Unit and regression suite | 39 tests passed |
-| Exhaustive small systems | 65,550 nonempty supports at n = 2 and n = 4 checked |
-| Exact purity vs enumeration | Maximum absolute discrepancy 1.12 × 10⁻¹⁵ or less |
-| Retained peak table and derived fits | All 11 rows consistent; maximum discrepancy 3.56 × 10⁻¹⁵ or less |
+| Exhaustive small systems | 65,550 nonempty supports at $n=2$ and $n=4$ checked |
+| Exact purity vs enumeration | Maximum absolute discrepancy $1.12\times10^{-15}$ or less |
+| Retained peak table and derived fits | All 11 rows consistent; maximum discrepancy $3.56\times10^{-15}$ or less |
 | Residue-control summaries | All 12,000 observations across 12 groups checked |
 | Seed replay | 36 sampled supports reproduced |
 | Dense-bulk implementation | 16,660 parameter pairs checked against the stated formula |

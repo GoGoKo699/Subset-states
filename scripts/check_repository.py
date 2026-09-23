@@ -9,7 +9,7 @@ import re
 import sys
 from urllib.parse import unquote, urlsplit
 
-from check_manuscript import validate as validate_manuscript
+from check_manuscript import validate as validate_manuscript, validate_math
 
 ROOT = Path(__file__).resolve().parents[1]
 SKIP = {'.git', '.venv', 'venv', 'env', 'generated', '__pycache__', 'build', 'dist'}
@@ -34,8 +34,7 @@ def main() -> None:
         if path.suffix != '.md':
             continue
         content = path.read_text()
-        if re.search(r'\\(?:begin|end|frac|mathrm|mathbb|gamma|lambda)\b|\\[\[\]()]|\$|```math\b', content):
-            errors.append(f'use plain-text or Unicode mathematics in Markdown: {rel}')
+        errors.extend(f'{rel}: {message}' for message in validate_math(content))
         # This repository uses inline links without spaces or optional titles.
         for target in re.findall(r'!?\[[^\]]*\]\(([^)]+)\)', content):
             url = urlsplit(target)
