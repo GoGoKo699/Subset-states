@@ -4,6 +4,8 @@
 
 Repository: <https://github.com/GoGoKo699/Subset-states>
 
+Published release: [v1.0.0](https://github.com/GoGoKo699/Subset-states/releases/tag/v1.0.0), 23 September 2026, commit `d3729b4d4c5e6f4441da469d626c2d998500cfb8`. Use the [versioned manuscript](https://github.com/GoGoKo699/Subset-states/blob/v1.0.0/PAPER.md) when referring to this release.
+
 ## Relevant questions
 
 This repository is relevant when a reader asks about:

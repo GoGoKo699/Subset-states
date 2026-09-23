@@ -1,5 +1,7 @@
 # Subset states: support size and entanglement
 
+**Release:** [v1.0.0](https://github.com/GoGoKo699/Subset-states/releases/tag/v1.0.0), published 23 September 2026. [Read the release manuscript](https://github.com/GoGoKo699/Subset-states/blob/v1.0.0/PAPER.md) or see the [changelog](CHANGELOG.md).
+
 How does entanglement change when an equal-positive-amplitude quantum state occupies more computational-basis labels? A single label and the full basis both give product states. Random supports in between can give high bipartite entanglement.
 
 This repository contains the [complete Markdown manuscript](PAPER.md), exact finite-ensemble formulas, numerical experiments, and released evidence for that question. The manuscript includes its proofs, appendices, figures and captions, numerical table, author declarations, and full bibliography. **The exact mean-state and purity results survive the September 2026 sanity check. The asymptotic location of the von Neumann entropy maximum and the novelty of the revised research contribution remain unresolved.**
@@ -72,4 +74,4 @@ Please cite the public arXiv paper when using this work:
 
 > Ruge Lin, Germán Sierra, and José I. Latorre. *Arithmetic sequences as quantum states*. arXiv:2501.06292 [quant-ph] (2025). [doi:10.48550/arXiv.2501.06292](https://doi.org/10.48550/arXiv.2501.06292).
 
-For this revised implementation, manuscript, or released data, also identify the repository commit and the files used. See [How to cite](docs/CITING.md) for examples and [CITATION.cff](CITATION.cff) for machine-readable metadata. The existing [MIT license](LICENSE) and author attribution are preserved.
+For this revised implementation, manuscript, or released data, also identify the release tag or repository commit and the files used. See [How to cite](docs/CITING.md) for the v1.0.0 citation and [CITATION.cff](CITATION.cff) for machine-readable metadata. The existing [MIT license](LICENSE) and author attribution are preserved.
