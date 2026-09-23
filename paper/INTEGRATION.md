@@ -14,7 +14,7 @@ The [machine-readable manifest](../validation/manuscript_manifest.json) records 
 | Main text | [Sections 1–7](../PAPER.md#sec-introduction) | All sections and subsections |
 | Mathematical statements and arguments | [Section 3](../PAPER.md#sec-exact-moments), [Section 6](../PAPER.md#sec-structured), appendices C–D | Both propositions, theorem, corollary, remark, and complete proofs/derivations |
 | Numbered mathematical displays | Equations (1)–(88) | Original numbering, including unlabelled displays and individually numbered aligned rows |
-| Peak estimates | [Table 1](../PAPER.md#tab-peak-estimates) | All 11 rows, n = 10–30, checked against the released CSV |
+| Peak estimates | [Table 1](../PAPER.md#tab-peak-estimates) | All 11 rows, $`n=10\text{–}30`$, checked against the released CSV |
 | Figures | Figures 1–7 | All panels, legends, original captions, and sampling qualifications |
 | Supporting analysis | [Appendices A–D](../PAPER.md#app-renyi) | Rényi trajectories, balanced-cut distributions, combinatorial derivations, residue proof and sampler |
 | Declarations | Data availability, acknowledgements, conflict of interest | Preserved author statements, with a separate data-availability qualification |
@@ -22,7 +22,11 @@ The [machine-readable manifest](../validation/manuscript_manifest.json) records 
 
 ## Representation
 
-All prose and mathematics are ordinary Markdown with Unicode and supported HTML subscript/superscript tags. Numbered blockquotes group display formulas; logical line breaks keep long expressions readable. Inline mathematics uses the same typography, without code boxes. Parentheses and brackets make fractional scope explicit; binom(a,b) denotes a binomial coefficient, ⊗ a tensor product, and ⊕ a direct sum. No mathematics renderer or document compiler is required. Equation numbers and reference numbers have stable local anchors. The original section and appendix order is retained.
+All prose and mathematics are maintained in Markdown, following the native equation style used by [Hopf-Frame-Compilation](https://github.com/GoGoKo699/Hopf-Frame-Compilation). GitHub renders display equations from `math` fences and inline mathematics from dollar-delimited expressions. Fractions, sums, radicals, matrices, and indices use standard mathematical typesetting; aligned rows keep long formulas readable. Numbered displays use explicit equation labels alongside stable local anchors. The original equation numbering, reference numbering, section order, and appendix order are retained.
+
+TeX-style mathematical notation appears only within Markdown. The repository contains no standalone TeX documents, BibTeX files, PDF deliverables, or LaTeX build dependency. A Markdown viewer must support mathematical rendering to reproduce GitHub's layout; plain-text viewers show the formula source.
+
+Inline expressions use GitHub's dollar-and-backtick delimiters so that Markdown cannot consume mathematical braces or interpret subscripts as emphasis. Upright operator names and explicit equation-number text avoid the rejected operator macro and malformed tagged-equation layout observed during the GitHub preview review.
 
 The supplied figure files were rendered once with Poppler 26.05.0 at 180 dots per inch into [figures](figures). They are manuscript assets, not new simulations. Their separate checksums preserve the exact imported presentation; Figure 2 comes from the revised manuscript and differs from the older released rendering. Existing CSV and PNG evidence under `data/` and `outputs/` has not been replaced. The existing Python figure scripts remain available to redraw plots from released data, without a document build dependency.
 
@@ -31,8 +35,8 @@ The supplied figure files were rendered once with Poppler 26.05.0 at 180 dots pe
 The conversion preserves the source's scientific content and adds explicitly marked repository audit notes. A faithful transcription alone cannot establish reproducibility, novelty, or publication readiness.
 
 - The working manuscript title is not substituted into the metadata for the public 2025 preprint, *Arithmetic sequences as quantum states*, arXiv:2501.06292v1. [CITATION.cff](../CITATION.cff) continues to identify the verified public version.
-- Historical peak values, fitted lines, and captions are retained. Statements about a numerical peak describe those finite estimates. Complete original global-search records, especially for n = 22–30, remain unavailable; current neighborhood checks do not replace them. The source's protocol description is qualified accordingly.
-- The final review also corrected the abstract, introduction, peak discussion, and conclusion to distinguish released sampled curves from historical peak estimates. It removed an unsupported suggestion connecting the upward finite-size trend to the 3/4 purity boundary. These are explicit wording corrections to the recovered manuscript; the reported data and mathematical results are unchanged.
+- Historical peak values, fitted lines, and captions are retained. Statements about a numerical peak describe those finite estimates. Complete original global-search records, especially for $`n=22\text{–}30`$, remain unavailable; current neighborhood checks do not replace them. The source's protocol description is qualified accordingly.
+- The final review also corrected the abstract, introduction, peak discussion, and conclusion to distinguish released sampled curves from historical peak estimates. It removed an unsupported suggestion connecting the upward finite-size trend to the $`3/4`$ purity boundary. These are explicit wording corrections to the recovered manuscript; the reported data and mathematical results are unchanged.
 - Equation (12) now explicitly states its real-coefficient assumption. Its reduced-state expression applies to the equal-positive-amplitude subset states; the [research notes](../docs/RESEARCH.md) give the general complex convention.
 - The purity-minimizing scale and the dense-side purity crossover do not locate the von Neumann entropy maximizer. The dense separated-mode ansatz remains heuristic; numerical agreement is not a limiting-spectrum theorem. Ensemble means, individual supports, and distributions over cuts remain distinct.
 - The supplied acknowledgements and conflict-of-interest statement are retained as author declarations. The data-availability statement is accompanied by the repository's actual evidence limitations.

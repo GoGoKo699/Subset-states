@@ -5,7 +5,7 @@ These inherited CSV files are preserved as evidence. Regeneration defaults write
 | File | Contents |
 |---|---|
 | [table_i_peaks.csv](table_i_peaks.csv) | Historical peak estimates from Table I of the 2025 preprint; original global searches are not fully reconstructable |
-| [peak_verification_schedule.csv](peak_verification_schedule.csv) | Default local-check workloads; high-n entries are computationally expensive |
+| [peak_verification_schedule.csv](peak_verification_schedule.csv) | Default local-check workloads; high-$`n`$ entries are computationally expensive |
 | [fig5_random_qft_summary.csv](fig5_random_qft_summary.csv) | Cardinality-matched computational/Fourier baseline summaries |
 | [fig5_almost_prime_unions.csv](fig5_almost_prime_unions.csv) | Deterministic almost-prime support entropies |
 | [residue_matched_summary.csv](residue_matched_summary.csv) | Twelve matched-ensemble summaries and seeds |

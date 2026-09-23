@@ -200,7 +200,7 @@ def main() -> int:
                    "Dense-bulk formula implementation": dense_ansatz_checks(),
                    "Residue-control evidence": residue_checks()}
         report = markdown_report("Scientific sanity checks", results,
-            "Exhaustive checks cover every nonempty support at n=2 and n=4 against production routines. "
+            "Exhaustive checks cover every nonempty support at $`n=2`$ and $`n=4`$ against production routines. "
             "Table I checks read the actual retained CSV and its derived outputs; they do not rerun the "
             "peak searches or validate an asymptotic law. The residue checks reconstruct all 12,000-row "
             "statistics and replay three seeded supports per group (36 total). Formula agreement does "

@@ -234,7 +234,17 @@ def markdown_report(title: str, sections: dict[str, dict[str, float | int]], sco
     lines = [f"# {title}", "", "**Status: PASS for the checks listed below.**", "", scope, ""]
     for name, values in sections.items():
         lines.extend([f"## {name}", "", "| Check | Result |", "| --- | ---: |"])
-        lines.extend(f"| {key.replace('_', ' ')} | {value:.12g} |" for key, value in values.items())
+        for key, value in values.items():
+            label = key.replace("log2_M_n", r"$`\log_2 M_n`$").replace("S_n", "$`S_n`$")
+            # Preserve mathematical subscripts while spelling out ordinary keys.
+            label = label.replace("_slope", " slope").replace("_intercept", " intercept")
+            if "$" not in label:
+                label = label.replace("_", " ")
+            number = f"{value:.12g}"
+            if "e" in number:
+                mantissa, exponent = number.split("e")
+                number = rf"$`{mantissa}\times10^{{{int(exponent)}}}`$"
+            lines.append(f"| {label} | {number} |")
         lines.append("")
     return "\n".join(lines)
 

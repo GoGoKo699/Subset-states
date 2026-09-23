@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections import Counter
 import csv
 import hashlib
-from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
@@ -15,24 +14,50 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class ScriptTagCheck(HTMLParser):
-    """Catch broken nested indices/exponents before Markdown is published."""
+MATH_BLOCK = re.compile(r'^```math\s*\n(.*?)^```\s*$', re.M | re.S)
 
-    def __init__(self) -> None:
-        super().__init__()
-        self.stack: list[str] = []
-        self.errors: list[str] = []
 
-    def handle_starttag(self, tag: str, attrs: list) -> None:
-        if tag in {'sub', 'sup'}:
-            self.stack.append(tag)
-
-    def handle_endtag(self, tag: str) -> None:
-        if tag in {'sub', 'sup'}:
-            if not self.stack or self.stack[-1] != tag:
-                self.errors.append(f'mismatched manuscript typography tag: {tag}')
-            else:
-                self.stack.pop()
+def validate_math(content: str) -> list[str]:
+    """Catch source damage; actual GitHub rendering still needs visual review."""
+    errors: list[str] = []
+    blocks = MATH_BLOCK.findall(content)
+    if len(blocks) != len(re.findall(r'^```math\s*$', content, re.M)):
+        errors.append('unclosed native math fence')
+    prose = MATH_BLOCK.sub('', content)
+    prose = re.sub(r'^```.*?^```\s*$', '', prose, flags=re.M | re.S)
+    prose = re.sub(r'\$`([^`\n]+)`\$', r'$\1$', prose)
+    prose = re.sub(r'`[^`\n]*`', '', prose)
+    expressions = list(blocks)
+    for line in prose.splitlines():
+        line = re.sub(r'\\\$', '', line)
+        if line.count('$') % 2:
+            errors.append('unbalanced inline math delimiters')
+        expressions.extend(re.findall(r'\$([^$]+)\$', line))
+    for expression in expressions:
+        # Literal braces are escaped; grouping braces must be balanced.
+        grouping = re.sub(r'\\[{}]', '', expression)
+        depth = 0
+        for char in grouping:
+            depth += (char == '{') - (char == '}')
+            if depth < 0:
+                break
+        if depth != 0:
+            errors.append('unbalanced mathematical grouping braces')
+        environments: list[str] = []
+        for kind, name in re.findall(r'\\(begin|end)\{([^}]+)\}', expression):
+            if kind == 'begin':
+                environments.append(name)
+            elif not environments or environments.pop() != name:
+                errors.append('mismatched mathematical alignment environment')
+        if environments:
+            errors.append('unclosed mathematical alignment environment')
+        if re.search(r'\\(?:ket|bra|braket|Tr)\b', expression):
+            errors.append('undefined manuscript macro in native math')
+        if re.search(r'\\(?:tag|operatorname)\b', expression):
+            errors.append('math macro failed the GitHub rendering review; use an explicit label or upright text')
+    if re.search(r'\\(?:documentclass|usepackage|newcommand|renewcommand)\b', prose):
+        errors.append('standalone document commands do not belong in Markdown')
+    return list(dict.fromkeys(errors))
 
 
 def anchors(content: str) -> set[str]:
@@ -73,16 +98,21 @@ def validate(root: Path = ROOT) -> list[str]:
     for heading in ['Data availability', 'Acknowledgements', 'Conflict of interest']:
         if f'\n## {heading}\n' not in content:
             errors.append(f'missing manuscript declaration: {heading}')
-    equations = re.findall(r'^> \*\*\((\d+)\)\*\* ', content, re.M)
+    blocks = MATH_BLOCK.findall(content)
+    if len(blocks) != counts['numbered_equations'] + counts['abstract_displays']:
+        errors.append('manuscript must retain all 90 native math displays')
+    equations = [number for block in blocks
+                 for number in re.findall(r'\\qquad\\text\{\((\d+)\)\}', block)]
     if equations != [str(n) for n in range(1, counts['numbered_equations'] + 1)]:
         errors.append('manuscript equation markers must appear once each in source order')
-    if '```' in content or '`' in content:
-        errors.append('manuscript mathematics must use readable typography, not code formatting')
-    typography = ScriptTagCheck()
-    typography.feed(content)
-    errors.extend(typography.errors)
-    if typography.stack:
-        errors.append('unclosed manuscript subscript/superscript tags')
+    for number in equations:
+        pattern = rf'<a id="eq-{number}"></a>\s*```math\n(?:(?!```).)*\\qquad\\text\{{\({number}\)\}}\s*```'
+        if not re.search(pattern, content, re.S):
+            errors.append(f'equation {number} is not paired with its stable anchor')
+    prose = re.sub(r'\$`([^`\n]+)`\$', '', MATH_BLOCK.sub('', content))
+    if '`' in prose or re.search(r'</?(?:sub|sup)>', content):
+        errors.append('manuscript formulas must use native math, not code or HTML indices')
+    errors.extend(validate_math(content))
     references = re.findall(r'^\*\*\[(\d+)\]\*\*', content, re.M)
     if references != [str(n) for n in range(1, counts['references'] + 1)]:
         errors.append('manuscript bibliography entries must appear once each in source order')

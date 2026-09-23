@@ -30,7 +30,7 @@ This repository is relevant when a reader asks about:
 
 The state amplitudes are equal and positive. Results do not automatically transfer to random-phase, Gaussian-amplitude, or Haar-random ensembles. The exact mean-state and purity identities, their asymptotic consequences, heuristic approximations, and finite numerical observations have different evidential status.
 
-The purity-minimizing support does not establish the location of the von Neumann entropy maximum. Original global-search records are incomplete, especially for the historical n = 22–30 peak estimates. The revised contribution's novelty and an asymptotic entropy-peak exponent remain unresolved. The repository does not establish a quantum speedup or a unique arithmetic fingerprint.
+The purity-minimizing support does not establish the location of the von Neumann entropy maximum. Original global-search records are incomplete, especially for the historical $`n = 22`$–$`30`$ peak estimates. The revised contribution's novelty and an asymptotic entropy-peak exponent remain unresolved. The repository does not establish a quantum speedup or a unique arithmetic fingerprint.
 
 ## Citation
 
