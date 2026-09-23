@@ -1,154 +1,45 @@
-# Numerical provenance and robustness notes
+# Evidence and provenance
 
-This document records the evidence hierarchy behind the publication release.
-It is intentionally more technical than the repository landing page.
+This document describes the evidence present in the repository, rather than treating earlier review verdicts as evidence. The cleanup started from commit [4cb99f1](https://github.com/GoGoKo699/Subset-states/tree/4cb99f109194124f500d75dd065ff43581a2682d), dated 21 August 2026.
 
-## Table I peak estimates
+## Evidence hierarchy
 
-`data/table_i_peaks.csv` contains the retained production estimates
-$(\widehat{M}_n,\widehat{S}_n)$ for even $n=10,\ldots,30$.
+| Material | What can be checked | Remaining limitation |
+|---|---|---|
+| Exact mean-state, purity, diagonal-entropy and residue formulas | Counting proofs in [research notes](docs/RESEARCH.md), independent enumeration, production-code comparisons | Enumeration alone is not a proof for arbitrary size |
+| `data/table_i_peaks.csv` | Transcription of Table I in the [2025 preprint](https://arxiv.org/html/2501.06292v1), arithmetic regressions, agreement with released derived tables | No complete original global-search records, raw peak samples, search uncertainty or full execution provenance |
+| `outputs/peak_verification/` | Local grids and quadratic fits for n = 10, 12, 14, 16, 18, 20 | These are neighborhood checks around given centers, not global rediscovery; files named `samples` hold aggregate statistics at each M |
+| `outputs/fig1/` | Released individual entropy samples and summaries | Support labels and a full original execution manifest are absent |
+| `outputs/fig3/` | One n = 24 reduced-state spectrum | One sample does not establish typicality or a random-matrix limit |
+| `outputs/fig4/`, `outputs/fig6/` | Summary curves and plotting inputs | Complete per-state records are not released here |
+| `data/residue_matched_*` | 12,000 paired entropy observations, 12 group summaries, seeds, and residue populations | Raw support labels are absent; a limited seed replay checks implementation consistency, not every stored observation |
+| `outputs/fig7/` | Partition entropy samples for two selected n = 20 states | Does not establish a uniform statement about all supports or all cuts |
 
-The complete intermediate global-search records for
-$n=22,24,26,28,30$ were not retained. Repeating those searches with the
-released dense exact-entropy implementation is computationally expensive. The
-recorded point estimates are therefore preserved as historical production data,
-not reconstructed raw data.
+CSV files and retained PNGs are unchanged by the cleanup. Their SHA-256 checksums are recorded in [the evidence manifest](validation/evidence_sha256.json), alongside the original license. This freezes the inherited evidence; it does not certify the original data-generation process.
 
-The repository supplies `scripts/peak_scaling_verification.py`, which samples a
-local window around a recorded $\widehat{M}_n$ and fits a quadratic in
-$\log_2 M$. This verifies neighbourhood consistency; it is not a global
-rediscovery procedure.
+## Retained peaks and finite fits
 
-## Robustness of the finite-size regressions
+All eleven Table I rows, for even n = 10 through 30, appear in the public 2025 preprint. Their publication establishes the source of the numbers, not independent reproducibility of the global searches. In particular, the complete intermediate searches at n = 22, 24, 26, 28, 30 were not retained.
 
-Using all eleven retained rows, $n=10,\ldots,30$,
+The unweighted regressions recomputed from the CSV are:
 
-$$
-\widehat{S}_n=0.509300\,n-0.990091,
-$$
+| Range | Entropy fit | Log-support fit |
+|---|---|---|
+| n = 10–30 | Ŝ = 0.509300n − 0.990091 | log₂ M̂ = 0.703541n − 0.357734 |
+| n = 10–20 | Ŝ = 0.514457n − 1.065190 | log₂ M̂ = 0.693450n − 0.210116 |
 
-$$
-\log_2\widehat{M}_n=0.703541\,n-0.357734.
-$$
+The slopes differ by roughly 1.01% and 1.43%, respectively, relative to the full-range slopes. This is a descriptive sensitivity check. It supplies neither missing uncertainty estimates nor a proof that the historical estimates are unbiased. Regression standard errors describe scatter of the rounded table entries, not uncertainty in the original search.
 
-Restricting the fit to the computationally accessible range
-$n=10,\ldots,20$ gives
+The effective ratio log₂ M̂/n grows from about 0.674 to 0.694 across the table. These finite observations establish no limiting exponent. In particular, the purity crossover at exponent 3/4 does not predict convergence of the entropy maximizer to that exponent. An entropy slope above 1/2 also cannot persist asymptotically, since S ≤ n/2.
 
-$$
-\widehat{S}_n=0.514457\,n-1.065190,
-$$
+## Residue-matched comparisons
 
-$$
-\log_2\widehat{M}_n=0.693450\,n-0.210116.
-$$
+The structured supports contain labels x with 1 ≤ Ω(x) ≤ k, where Ω counts prime factors with multiplicity and k = 1, 2, 3. For n = 14, each support is compared with four ensembles matching populations modulo 2ᵗ, for t = 0, 1, 2, 3. Each group contains 1,000 samples, and the same sampled support is evaluated before and after the QFT.
 
-The slope changes are approximately 1.01% for peak entropy and 1.43% for peak
-support size. The unreconstructed larger-size rows extend the observed trend but
-do not create or materially change it. Neither regression is claimed as an
-asymptotic theorem.
+A remaining deficit means that uniform placement conditional on those counts does not reproduce the structured entropy. It does not identify the cause or a unique fingerprint of primality. Zero sampled null entropies below a structured value is a finite rank observation, not a zero tail probability. The exact computational-basis residue ceiling is not automatically a Fourier-basis ceiling.
 
-## Analytic scale hierarchy and peak interpretation
+## Historical material
 
-For a power-law support $M=cN^\gamma$ with fixed $c>0$, the exact
-average-purity formula has the leading structure
+The old manuscript-readiness review, bibliography audit, duplicated text validation reports, and PDF copies of PNG figures were removed from the active tree. They remain available at the starting commit above. No manuscript source or complete revised bibliography was present in that tree, so this cleanup does not claim a lossless conversion of an unseen manuscript.
 
-$$
-\overline{P}_{N,M}
-=
-2N^{-1/2}
-+c^{-1}N^{-\gamma}
-+c^2N^{2\gamma-2}
-+\text{lower-order terms}.
-$$
-
-This gives the following hierarchy.
-
-- Every fixed $1/2<\gamma<3/4$ yields
-
-  $$
-  \overline{S}_{N,M}\geq \frac{n}{2}-1-o(1).
-  $$
-
-- The exponent $\gamma=2/3$ uniquely balances the sparse and rectangle
-  corrections. Optimizing the remaining coefficient gives
-  $M=2^{-1/3}N^{2/3}+O(1)$.
-
-- The exponent $\gamma=3/4$ is the dense-side boundary at which the rectangle
-  term becomes comparable with the $2N^{-1/2}$ balanced-cut contribution. At
-  $M=cN^{3/4}$,
-
-  $$
-  \overline{P}_{N,M}
-  =
-  (2+c^2)N^{-1/2}+o(N^{-1/2}).
-  $$
-
-These are statements about the exact average purity and the entropy lower bound
-derived from it. They do not locate the maximizer of the mean von Neumann
-entropy.
-
-For the retained numerical peaks, the pointwise effective exponent
-
-$$
-\gamma_n^{\mathrm{eff}}
-=
-\frac{\log_2\widehat M_n}{n}
-$$
-
-increases from approximately $0.674$ at $n=10$ to $0.694$ at $n=30$.
-The full-range fitted slope is $0.703541$. This motivates comparison with the
-$3/4$ dense-side boundary but does not establish convergence to $3/4$ or any
-other asymptotic peak law. No released figure or numerical dataset was altered
-for this interpretation.
-
-## Exact analytical validation
-
-The release exposes code for:
-
-- the exact fixed-cardinality ensemble-mean reduced state;
-- the exact ensemble-average purity;
-- the hypergeometric diagonal-entropy curve;
-- the residue-class entropy ceiling
-  $S(A)\leq n/2-t+H(\mathbf{p}^{(t)})$.
-
-`tests/test_exact_purity_and_residue.py` and
-`scripts/final_scientific_validation.py` independently check these formulas by
-exhaustively enumerating all 65,535 nonempty supports at $n=4$.
-
-## Residue-matched reference ensembles
-
-For each almost-prime support $U_{N,k}$ with $k=1,2,3$, the released
-Figure 5 analysis uses four nested null ensembles:
-
-| matched low bits $t$ | retained information |
-|---:|---|
-| 0 | support cardinality only |
-| 1 | even/odd populations |
-| 2 | populations modulo 4 |
-| 3 | populations modulo 8 |
-
-For every $(k,t)$, 1,000 supports are independently sampled while preserving
-the complete residue-count vector. The same support is evaluated in the
-computational and Fourier bases, giving paired observations. Seeds are recorded
-in `data/residue_matched_summary.csv`; all 12,000 paired samples are in
-`data/residue_matched_samples.csv`.
-
-The residual deficit after matching a constraint means “not explained by the
-matched information under uniform placement.” It is not claimed to be a unique
-fingerprint of primality or to isolate all higher-order arithmetic correlations.
-
-## Figure files and generated data
-
-The manuscript-ready vector PDFs in `outputs/fig1/` through `outputs/fig7/` are
-the files used for the final manuscript candidate. Existing historical output
-CSVs in the GitHub repository may be retained when applying this release as an
-overlay. Figure 5’s final raw and summary data are included directly in this
-release because the constrained-null calculation is new and central to the
-revised manuscript.
-
-## Historical best-of-random-candidates experiment
-
-The former “greedy” Figure 8 experiment is not part of the manuscript. It
-screened independent random candidates and selected the one with the largest
-mean balanced-cut entropy; it was not a greedy construction. The code is kept
-under `exploratory/best_of_random_candidates/` with corrected terminology.
+The historical best-of-random-candidates experiment remains under [exploratory](exploratory/best_of_random_candidates/README.md). It selects among independent random candidates; it is not a greedy construction.

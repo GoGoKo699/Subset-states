@@ -16,7 +16,7 @@ def main() -> None:
     args = parser.parse_args()
     samples = args.data_dir / f"peak_verification_n{args.n}_samples.csv"
     fit = args.data_dir / f"peak_verification_n{args.n}_fit.csv"
-    out = args.out or args.data_dir / f"peak_verification_n{args.n}_from_csv.pdf"
+    out = args.out or ROOT / "generated" / "figures" / "peak_verification" / f"peak_verification_n{args.n}_from_csv.png"
     plot_peak_search(samples, fit, out)
 
 if __name__ == "__main__":

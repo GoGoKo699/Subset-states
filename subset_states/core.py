@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from itertools import combinations
 from math import log2, sqrt
+from numbers import Integral, Real
 from typing import Iterable, Sequence
 
 import numpy as np
@@ -22,16 +23,46 @@ class SummaryStats:
     maximum: float
 
 
+def _validate_positive_n(n: int) -> None:
+    if isinstance(n, (bool, np.bool_)) or not isinstance(n, Integral) or n <= 0:
+        raise ValueError(f"n must be a positive integer; received n={n}.")
+
+
 def _validate_even_n(n: int) -> None:
-    if n <= 0 or n % 2 != 0:
+    _validate_positive_n(n)
+    if n % 2 != 0:
         raise ValueError(f"n must be a positive even integer; received n={n}.")
 
 
 def _validate_support_size(n: int, m: int, *, allow_zero: bool = False) -> None:
     N = 1 << n
     lower = 0 if allow_zero else 1
-    if not (lower <= m <= N):
+    if isinstance(m, (bool, np.bool_)) or not isinstance(m, Integral) or not (lower <= m <= N):
         raise ValueError(f"m must satisfy {lower} <= m <= 2**n={N}; received m={m}.")
+
+
+def _validated_support(n: int, support: ArrayLike) -> NDArray[np.int64]:
+    """Validate before conversion so fractional or unsigned labels cannot wrap."""
+
+    _validate_positive_n(n)
+    labels = np.asarray(support)
+    if labels.ndim != 1 or labels.size == 0:
+        raise ValueError("support must be a nonempty one-dimensional array of integer basis labels.")
+    if labels.dtype.kind not in "iu":
+        raise ValueError("support labels must be integers.")
+    N = 1 << n
+    if np.any(labels < 0) or np.any(labels >= N):
+        raise ValueError(f"support labels must lie in [0, {N - 1}].")
+    if np.unique(labels).size != labels.size:
+        raise ValueError("support contains duplicate basis labels.")
+    if np.any(labels > np.iinfo(np.int64).max):
+        raise ValueError("support labels exceed the supported int64 range.")
+    return labels.astype(np.int64, copy=False)
+
+
+def _validate_atol(atol: float) -> None:
+    if not isinstance(atol, Real) or not np.isfinite(atol) or atol < 0:
+        raise ValueError("atol must be a finite nonnegative real number.")
 
 
 def natural_right_bits(n: int) -> tuple[int, ...]:
@@ -42,6 +73,8 @@ def natural_right_bits(n: int) -> tuple[int, ...]:
 
 
 def _left_bits(n: int, right_bits: Sequence[int]) -> tuple[int, ...]:
+    if any(isinstance(bit, (bool, np.bool_)) or not isinstance(bit, Integral) for bit in right_bits):
+        raise ValueError("right_bits must contain integer bit positions.")
     right = set(right_bits)
     if len(right) != len(right_bits):
         raise ValueError("right_bits contains repeated bit positions.")
@@ -53,8 +86,7 @@ def _left_bits(n: int, right_bits: Sequence[int]) -> tuple[int, ...]:
 def random_subset(n: int, m: int, rng: np.random.Generator) -> NDArray[np.int64]:
     """Sample a uniformly random subset of {0, ..., 2**n - 1} of size m."""
 
-    if n <= 0:
-        raise ValueError("n must be positive.")
+    _validate_positive_n(n)
     _validate_support_size(n, m)
     return np.sort(rng.choice(1 << n, size=m, replace=False).astype(np.int64))
 
@@ -79,22 +111,17 @@ def matrix_from_support(
 ) -> NDArray:
     """Return the bipartite coefficient matrix for an equal-amplitude support.
 
-    With ``normalize=True``, each occupied entry equals 1/sqrt(M), so the reduced
-    density matrix of the right subsystem is ``C.conj().T @ C``.  Set
+    The first position in each subsystem's bit list is its least significant
+    bit. With ``normalize=True``, each occupied entry equals 1/sqrt(M). For
+    coefficients C[a, b], the right reduced state is ``C.T @ C.conj()``
+    (here C is real). Set
     ``normalize=False`` to obtain the binary support-incidence matrix.
     """
 
     _validate_even_n(n)
-    support_arr = np.asarray(support, dtype=np.int64)
-    if support_arr.ndim != 1:
-        raise ValueError("support must be a one-dimensional array of basis labels.")
-    if support_arr.size == 0:
-        raise ValueError("support must contain at least one basis label.")
-    N = 1 << n
-    if np.any(support_arr < 0) or np.any(support_arr >= N):
-        raise ValueError(f"support labels must lie in [0, {N - 1}].")
-    if np.unique(support_arr).size != support_arr.size:
-        raise ValueError("support contains duplicate basis labels.")
+    support_arr = _validated_support(n, support)
+    if normalize and np.dtype(dtype).kind not in "fc":
+        raise ValueError("normalized coefficients require a floating-point or complex dtype.")
 
     right = tuple(right_bits) if right_bits is not None else natural_right_bits(n)
     if len(right) != n // 2:
@@ -114,28 +141,42 @@ def matrix_from_state_vector(
     state: ArrayLike,
     right_bits: Sequence[int] | None = None,
 ) -> NDArray:
-    """Return the bipartite coefficient matrix for an arbitrary state vector."""
+    """Return C[a, b] in the same basis order as :func:`matrix_from_support`.
+
+    The first position in each subsystem's bit list is its least significant
+    bit. The right reduced state is ``C.T @ C.conj()``; ``C.conj().T @ C``
+    is its transpose and has the same spectrum, but generally different entries.
+    The vector need not be normalized.
+    """
 
     _validate_even_n(n)
     vector = np.asarray(state)
     N = 1 << n
     if vector.shape != (N,):
         raise ValueError(f"state must have shape ({N},); received {vector.shape}.")
+    if vector.dtype.kind not in "biufc" or not np.all(np.isfinite(vector)):
+        raise ValueError("state must contain finite numeric amplitudes.")
     right = tuple(right_bits) if right_bits is not None else natural_right_bits(n)
     if len(right) != n // 2:
         raise ValueError(f"balanced bipartition requires {n // 2} right bits.")
     left = _left_bits(n, right)
 
-    left_axes = [n - 1 - bit for bit in left]
-    right_axes = [n - 1 - bit for bit in right]
+    # Reshape traverses axes from most to least significant within each index.
+    left_axes = [n - 1 - bit for bit in reversed(left)]
+    right_axes = [n - 1 - bit for bit in reversed(right)]
     tensor = vector.reshape((2,) * n)
     return np.transpose(tensor, left_axes + right_axes).reshape(1 << len(left), 1 << len(right))
 
 
 def spectrum_from_matrix(matrix: ArrayLike, *, atol: float = 1e-14) -> NDArray[np.float64]:
-    """Return the non-zero eigenvalues of C†C using a stable SVD."""
+    """Return normalized non-zero reduced-state eigenvalues using a stable SVD."""
 
+    _validate_atol(atol)
     mat = np.asarray(matrix)
+    if mat.ndim != 2 or mat.size == 0:
+        raise ValueError("matrix must be a nonempty two-dimensional array.")
+    if mat.dtype.kind not in "biufc" or not np.all(np.isfinite(mat)):
+        raise ValueError("matrix must contain finite numeric coefficients.")
     singular_values = np.linalg.svd(mat, compute_uv=False)
     eigvals = np.real_if_close(singular_values * singular_values).astype(np.float64)
     eigvals[eigvals < atol] = 0.0
@@ -152,18 +193,41 @@ def renyi_entropy_from_spectrum(
     *,
     atol: float = 1e-14,
 ) -> float:
-    """Return the Rényi entropy in bits. order=1 gives von Neumann entropy."""
+    """Return the Rényi entropy in bits; order=1 gives von Neumann entropy.
 
-    p = np.asarray(eigvals, dtype=np.float64)
+    A finite, nonnegative spectrum is normalized after entries at or below
+    ``atol`` are removed. Negative roundoff no smaller than ``-atol`` is allowed.
+    The order must be positive; positive infinity gives the min-entropy.
+    """
+
+    _validate_atol(atol)
+    if not isinstance(order, Real) or np.isnan(order) or order <= 0:
+        raise ValueError("Rényi order must be a positive real number or positive infinity.")
+    p = np.asarray(eigvals)
+    if p.ndim != 1 or p.size == 0 or p.dtype.kind not in "biuf":
+        raise ValueError("spectrum must be a nonempty one-dimensional array of real eigenvalues.")
+    p = p.astype(np.float64)
+    if not np.all(np.isfinite(p)) or np.any(p < -atol):
+        raise ValueError("spectrum must be finite and nonnegative within atol.")
     p = p[p > atol]
+    if p.size == 0:
+        raise ValueError("density-matrix spectrum has zero trace at the requested atol.")
+    # Scaling first avoids overflow when normalizing a finite input spectrum.
+    p = p / p.max()
     p = p / p.sum()
-    if np.isclose(order, 1.0):
+    if order == 1.0:
         return float(-np.sum(xlogy(p, p)) / np.log(2.0))
     if np.isinf(order):
         return float(-np.log2(np.max(p)))
-    if order <= 0:
-        raise ValueError("Rényi order must be positive.")
-    return float(np.log2(np.sum(p**order)) / (1.0 - order))
+    log_p = np.log(p)
+    if abs(order - 1.0) < 0.1:
+        # log(sum(p**order)) near one, without subtracting nearly equal numbers.
+        delta = np.sum(p * np.expm1((order - 1.0) * log_p))
+        return float(np.log1p(delta) / ((1.0 - order) * np.log(2.0)))
+    log_max = np.max(log_p)
+    with np.errstate(over="ignore"):
+        tail = logsumexp(order * (log_p - log_max))
+    return float((order / (1.0 - order) * log_max + tail / (1.0 - order)) / np.log(2.0))
 
 
 def entropy_from_support(
@@ -192,13 +256,13 @@ def qft_state_from_support(n: int, support: ArrayLike) -> NDArray[np.complex128]
     """Return the positive-exponent QFT of an equal-amplitude subset state.
 
     NumPy's ``ifft(..., norm='ortho')`` implements the convention
-    exp(+2πijk/N)/sqrt(N), matching the manuscript definition.  For the real
+    exp(+2πijk/N)/sqrt(N), matching the research notes. For the real
     input states used here, switching the sign only complex-conjugates the output
     and therefore leaves all reported entropies unchanged.
     """
 
+    support_arr = _validated_support(n, support)
     N = 1 << n
-    support_arr = np.asarray(support, dtype=np.int64)
     vector = np.zeros(N, dtype=np.complex128)
     vector[support_arr] = 1.0 / sqrt(support_arr.size)
     return np.fft.ifft(vector, norm="ortho")
@@ -297,9 +361,9 @@ def hypergeometric_occupancy_approximation(n: int, m: int) -> float:
     """
 
     _validate_even_n(n)
-    if m <= 0:
+    _validate_support_size(n, m, allow_zero=True)
+    if m == 0:
         return 0.0
-    _validate_support_size(n, m)
     d = 1 << (n // 2)
     N = 1 << n
     w_min = max(0, m - (N - d))
@@ -326,7 +390,7 @@ def fixed_cardinality_average_purity(n: int, m: int) -> float:
     """Exact ensemble-average purity for the balanced fixed-cardinality ensemble.
 
     For N=2**n=d**2 and a support chosen uniformly among all M-element subsets,
-    this returns E[Tr(rho_R**2)] as derived in the manuscript.
+    this returns E[Tr(rho_R**2)] as derived in the research notes.
     """
 
     _validate_even_n(n)
@@ -356,17 +420,12 @@ def residue_class_entropy_ceiling(n: int, support: ArrayLike, matched_low_bits: 
     """
 
     _validate_even_n(n)
+    if isinstance(matched_low_bits, (bool, np.bool_)) or not isinstance(matched_low_bits, Integral):
+        raise ValueError("matched_low_bits must be an integer.")
     t = int(matched_low_bits)
     if not (0 <= t <= n // 2):
         raise ValueError(f"matched_low_bits must lie in [0, {n // 2}].")
-    support_arr = np.asarray(support, dtype=np.int64)
-    if support_arr.ndim != 1 or support_arr.size == 0:
-        raise ValueError("support must be a nonempty one-dimensional array.")
-    N = 1 << n
-    if np.any(support_arr < 0) or np.any(support_arr >= N):
-        raise ValueError(f"support labels must lie in [0, {N - 1}].")
-    if np.unique(support_arr).size != support_arr.size:
-        raise ValueError("support contains duplicate basis labels.")
+    support_arr = _validated_support(n, support)
     modulus = 1 << t
     counts = np.bincount(support_arr % modulus, minlength=modulus).astype(float)
     probabilities = counts[counts > 0] / support_arr.size

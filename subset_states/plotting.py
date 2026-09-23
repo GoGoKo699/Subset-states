@@ -41,8 +41,8 @@ def apply_journal_style() -> None:
             "ytick.labelsize": 8,
             "lines.linewidth": 1.15,
             "axes.prop_cycle": cycler(color=COOL_PALETTE),
-            "pdf.fonttype": 42,
-            "ps.fonttype": 42,
+            "text.usetex": False,
+            "savefig.dpi": 300,
             "savefig.bbox": "tight",
         }
     )
@@ -52,6 +52,4 @@ def save_figure(fig, path: str | Path) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path)
-    if path.suffix.lower() == ".pdf":
-        fig.savefig(path.with_suffix(".png"), dpi=300)
     plt.close(fig)

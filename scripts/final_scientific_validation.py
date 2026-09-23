@@ -1,251 +1,216 @@
 #!/usr/bin/env python3
-"""Independent checks for the final subset-state manuscript candidate."""
+"""Validate exact small-system mathematics and consistency of retained CSV evidence.
+
+Prints Markdown without changing the repository. This check is not a peak-search
+rerun, an asymptotic theorem, a novelty assessment, or a publication certificate.
+"""
 from __future__ import annotations
 
-import csv
+import argparse
 import math
-from collections import defaultdict
 from pathlib import Path
+import sys
 
 import numpy as np
-from scipy.special import digamma
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from subset_states import core, tables
+from scripts.fig2_peak_scaling import fit_line
+from scripts.validate_residue_results import (
+    close, finite, markdown_report, read_rows, require, residue_checks, write_report,
+)
 
 
-def entropy_bits(rho: np.ndarray, tol: float = 1e-14) -> float:
-    vals = np.linalg.eigvalsh(rho).real
-    vals = vals[vals > tol]
-    vals = vals / vals.sum()
-    return float(-np.sum(vals * np.log2(vals)))
+def exhaustive_checks(n_values: tuple[int, ...] = (2, 4)) -> dict[str, float | int]:
+    """Independently enumerate supports and compare the production implementations."""
+    errors = {name: 0.0 for name in (
+        "coefficient_matrix", "entropy", "residue_ceiling", "mean_spectrum", "average_purity",
+        "diagonal_entropy", "entropy_lower_bound", "qft_amplitude", "qft_entropy",
+    )}
+    supports_enumerated = 0
+    max_bound_violation = 0.0
+    for n in n_values:
+        require(n in (2, 4), "exhaustive checks are deliberately limited to n=2 and n=4")
+        N, d = 1 << n, 1 << (n // 2)
+        rho_sum = np.zeros((N + 1, d, d))
+        purity_sum = np.zeros(N + 1)
+        diagonal_sum = np.zeros(N + 1)
+        entropy_sum = np.zeros(N + 1)
+        counts = np.zeros(N + 1, dtype=int)
+        labels = np.arange(N, dtype=np.uint32)
+        # Batch eigensolvers provide an independent route from the production SVD.
+        for lo in range(1, 1 << N, 4096):
+            masks = np.arange(lo, min(1 << N, lo + 4096), dtype=np.uint32)
+            bits = ((masks[:, None] >> labels[None, :]) & 1).astype(float)
+            sizes = bits.sum(axis=1).astype(int)
+            matrices = bits.reshape(-1, d, d) / np.sqrt(sizes[:, None, None])
+            rho = np.einsum("bai,baj->bij", matrices, matrices)
+            eigenvalues = np.linalg.eigvalsh(rho)
+            safe = np.where(eigenvalues > 1e-14, eigenvalues, 1.0)
+            entropies = -np.sum(np.where(eigenvalues > 1e-14, eigenvalues * np.log2(safe), 0), axis=1)
+            diagonal = np.diagonal(rho, axis1=1, axis2=2)
+            safe_diag = np.where(diagonal > 0, diagonal, 1.0)
+            diagonal_entropies = -np.sum(diagonal * np.log2(safe_diag), axis=1)
+            np.add.at(rho_sum, sizes, rho)
+            purity_sum += np.bincount(sizes, weights=np.sum(rho * rho, axis=(1, 2)), minlength=N + 1)
+            diagonal_sum += np.bincount(sizes, weights=diagonal_entropies, minlength=N + 1)
+            entropy_sum += np.bincount(sizes, weights=entropies, minlength=N + 1)
+            counts += np.bincount(sizes, minlength=N + 1)
+            for index, size in enumerate(sizes):
+                support = np.flatnonzero(bits[index])
+                production_matrix = core.matrix_from_support(n, support)
+                matrix_error = float(np.max(np.abs(production_matrix - matrices[index])))
+                require(math.isfinite(matrix_error), "non-finite production coefficient matrix")
+                errors["coefficient_matrix"] = max(errors["coefficient_matrix"], matrix_error)
+                errors["entropy"] = max(errors["entropy"], close(
+                    core.entropy_from_support(n, support), float(entropies[index]), "production entropy"))
+                for t in range(n // 2 + 1):
+                    population = np.bincount(support % (1 << t), minlength=1 << t)
+                    probs = population[population > 0] / size
+                    bound = n / 2 - t - float(np.sum(probs * np.log2(probs)))
+                    errors["residue_ceiling"] = max(errors["residue_ceiling"], close(
+                        core.residue_class_entropy_ceiling(n, support, t), bound, "production residue ceiling"))
+                    max_bound_violation = max(max_bound_violation, float(entropies[index]) - bound)
+                if n == 2:
+                    # Explicit DFT checks sign and normalization, independently of FFT.
+                    phases = np.exp(2j * np.pi * np.outer(np.arange(N), support) / N)
+                    direct_state = phases.sum(axis=1) / math.sqrt(N * size)
+                    actual_state = core.qft_state_from_support(n, support)
+                    amplitude_error = float(np.max(np.abs(actual_state - direct_state)))
+                    require(math.isfinite(amplitude_error), "non-finite production QFT")
+                    errors["qft_amplitude"] = max(errors["qft_amplitude"], amplitude_error)
+                    c = direct_state.reshape(d, d)
+                    eig = np.linalg.eigvalsh(c.conj().T @ c)
+                    positive = eig[eig > 1e-14]
+                    direct_entropy = float(-np.sum(positive * np.log2(positive)))
+                    errors["qft_entropy"] = max(errors["qft_entropy"], close(
+                        core.entropy_from_state_vector(n, actual_state), direct_entropy, "production QFT entropy"))
+            supports_enumerated += len(masks)
+        for size in range(1, N + 1):
+            require(counts[size] == math.comb(N, size), f"n={n}, M={size}: enumeration count")
+            mean_rho = rho_sum[size] / counts[size]
+            uniform, orthogonal = core.fixed_cardinality_mean_spectrum(n, size)
+            predicted_rho = orthogonal * np.eye(d) + (uniform - orthogonal) * np.ones((d, d)) / d
+            error = float(np.max(np.abs(predicted_rho - mean_rho)))
+            require(math.isfinite(error), "non-finite production mean spectrum")
+            errors["mean_spectrum"] = max(errors["mean_spectrum"], error)
+            close(core.mean_matrix_uniform_eigenvalue(n, size), uniform, "production uniform eigenvalue")
+            mean_purity = float(purity_sum[size] / counts[size])
+            errors["average_purity"] = max(errors["average_purity"], close(
+                core.fixed_cardinality_average_purity(n, size), mean_purity, "production average purity"))
+            errors["diagonal_entropy"] = max(errors["diagonal_entropy"], close(
+                core.hypergeometric_occupancy_approximation(n, size), float(diagonal_sum[size] / counts[size]),
+                "production diagonal entropy"))
+            lower = core.average_entropy_lower_bound_from_purity(n, size)
+            errors["entropy_lower_bound"] = max(errors["entropy_lower_bound"], close(
+                lower, -math.log2(mean_purity), "production purity entropy bound"))
+            max_bound_violation = max(max_bound_violation, lower - float(entropy_sum[size] / counts[size]))
+    for name, error in errors.items():
+        require(error < 5e-12, f"{name} maximum error {error} exceeds tolerance")
+    require(max_bound_violation < 5e-12, f"entropy bound violated by {max_bound_violation}")
+    return {"supports_enumerated": supports_enumerated,
+            **{f"max_{name}_error": value for name, value in errors.items()},
+            "max_entropy_bound_violation": max_bound_violation}
 
 
-def h_shannon(probs: np.ndarray) -> float:
-    p = probs[probs > 0]
-    return float(-np.sum(p * np.log2(p))) if p.size else 0.0
-
-
-def exact_mean_rho(n: int, M: int) -> np.ndarray:
+def independent_page_entropy(n: int) -> float:
+    """Page expression using harmonic sums/expansion, independently of digamma."""
     d = 1 << (n // 2)
-    N = 1 << n
-    beta = (M - 1) / (d * (N - 1))
-    return (1 / d - beta) * np.eye(d) + beta * np.ones((d, d))
+    def harmonic(number: int) -> float:
+        if number < 32:
+            return math.fsum(1 / k for k in range(1, number + 1))
+        x = 1.0 / number
+        return (math.log(number) + 0.5772156649015328606 + x / 2 - x**2 / 12
+                + x**4 / 120 - x**6 / 252 + x**8 / 240 - x**10 / 132)
+    return (harmonic(d * d) - harmonic(d) - (d - 1) / (2 * d)) / math.log(2)
 
 
-def exact_avg_purity(n: int, M: int) -> float:
-    d = 1 << (n // 2)
-    N = 1 << n
-    return (
-        1 / M
-        + 2 * (d - 1) * (M - 1) / (M * (N - 1))
-        + (d - 1) ** 2 * (M - 1) * (M - 2) * (M - 3)
-        / (M * (N - 1) * (N - 2) * (N - 3))
-    )
+def table_fit_checks(root: Path = ROOT) -> dict[str, float | int]:
+    rows = read_rows(root / "data/table_i_peaks.csv", {"n", "M_n", "S_n"})
+    require([int(row["n"]) for row in rows] == list(range(10, 31, 2)), "Table I n grid is incomplete or duplicated")
+    table = np.asarray([(int(row["n"]), int(row["M_n"]), finite(row, "S_n")) for row in rows], dtype=float)
+    require(np.array_equal(table, np.asarray([[r["n"], r["M_n"], r["S_n"]]
+            for r in tables.read_table_i(root / "data/table_i_peaks.csv")])), "production Table I parser disagrees")
+    require(np.array_equal(table, tables.table_i_array()), "Table I CSV and production defaults disagree")
+    n, sizes, entropies = table.T
+    require(np.all((sizes >= 1) & (sizes <= 2**n)), "Table I support sizes out of range")
+    require(np.all((entropies >= 0) & (entropies <= n / 2)), "Table I entropy out of range")
+    page = np.asarray([independent_page_entropy(int(value)) for value in n])
+    for ni, value in zip(n, page):
+        close(core.exact_page_entropy_bits(int(ni)), float(value), "production Page entropy")
+    derived = read_rows(root / "outputs/fig2/fig2_table_with_page.csv", {
+        "n", "M_n", "log2_M_n", "S_n", "Page_exact_bits", "Page_minus_S_n"})
+    require(len(derived) == len(rows), "derived Table I row count mismatch")
+    max_error = 0.0
+    for row, ni, size, entropy, page_value in zip(derived, n, sizes, entropies, page):
+        for field, value in {"n": ni, "M_n": size, "log2_M_n": math.log2(size), "S_n": entropy,
+                             "Page_exact_bits": page_value, "Page_minus_S_n": page_value - entropy}.items():
+            max_error = max(max_error, close(finite(row, field), float(value), f"derived Table I {field}"))
+    fit_fields = {"slope", "intercept", "r_value", "r_squared", "p_value", "slope_stderr", "intercept_stderr", "residual_std"}
+    fits = read_rows(root / "outputs/fig2/fig2_linear_fit_summary.csv", {"quantity"} | fit_fields)
+    by_quantity = {row["quantity"]: row for row in fits}
+    require(len(fits) == 2 and set(by_quantity) == {"log2_M_n", "S_n"}, "fit quantities missing or duplicated")
+    results: dict[str, float | int] = {"table_rows_checked": len(rows)}
+    for quantity, values in (("log2_M_n", np.log2(sizes)), ("S_n", entropies)):
+        slope, intercept = np.polyfit(n, values, 1)
+        production = fit_line(n, values)
+        close(production["slope"], float(slope), f"independent {quantity} slope")
+        close(production["intercept"], float(intercept), f"independent {quantity} intercept")
+        for field in fit_fields:
+            # Relative tolerance is needed for tiny p-values; do not accept zero in their place.
+            expected = production[field]
+            max_error = max(max_error, close(finite(by_quantity[quantity], field), expected,
+                f"stored {quantity} fit {field}", atol=max(abs(expected) * 1e-8, 1e-30)))
+        results[f"{quantity}_slope"] = float(slope)
+        results[f"{quantity}_intercept"] = float(intercept)
+    gaps = page - entropies
+    require(np.all(np.diff(gaps) < 0), "recorded Page gaps are not decreasing")
+    require(np.all(np.diff(sizes / 2**n) < 0), "recorded support fractions are not decreasing")
+    results["max_derived_table_or_fit_error"] = max_error
+    return results
 
 
-def exhaustive_n4_checks() -> dict[str, float]:
-    n = 4
-    N = 1 << n
-    d = 1 << (n // 2)
-    m = n // 2
-    rho_sum = np.zeros((N + 1, d, d), dtype=float)
-    purity_sum = np.zeros(N + 1, dtype=float)
-    counts = np.zeros(N + 1, dtype=np.int64)
-    max_residue_violation = {1: -math.inf, 2: -math.inf}
-    max_entropy_routine_diff = 0.0
-
-    labels = np.arange(N, dtype=np.uint32)
-    batch_size = 4096
-    for lo in range(1, 1 << N, batch_size):
-        hi = min(1 << N, lo + batch_size)
-        masks = np.arange(lo, hi, dtype=np.uint32)
-        bits = ((masks[:, None] >> labels[None, :]) & 1).astype(float)
-        Ms = bits.sum(axis=1).astype(np.int64)
-        X = bits.reshape(-1, d, d)
-        rho = np.einsum('bai,baj->bij', X, X) / Ms[:, None, None]
-        evals = np.linalg.eigvalsh(rho).real
-        positive = np.where(evals > 1e-14, evals, 1.0)
-        entropy = -np.sum(np.where(evals > 1e-14, evals * np.log2(positive), 0.0), axis=1)
-        if lo == 1:
-            entropy_direct = np.asarray([entropy_bits(r) for r in rho[:128]])
-            max_entropy_routine_diff = max(
-                max_entropy_routine_diff,
-                float(np.max(np.abs(entropy[:128] - entropy_direct))),
-            )
-        purity = np.sum(evals * evals, axis=1)
-
-        np.add.at(rho_sum, Ms, rho)
-        purity_sum += np.bincount(Ms, weights=purity, minlength=N + 1)
-        counts += np.bincount(Ms, minlength=N + 1)
-
-        for t in (1, 2):
-            modulus = 1 << t
-            residue_counts = np.stack(
-                [bits[:, (labels % modulus) == r].sum(axis=1) for r in range(modulus)],
-                axis=1,
-            )
-            probs = residue_counts / Ms[:, None]
-            p_safe = np.where(probs > 0, probs, 1.0)
-            H = -np.sum(np.where(probs > 0, probs * np.log2(p_safe), 0.0), axis=1)
-            bound = m - t + H
-            max_residue_violation[t] = max(
-                max_residue_violation[t],
-                float(np.max(entropy - bound)),
-            )
-
-    max_mean_rho_error = 0.0
-    max_purity_error = 0.0
-    for M in range(1, N + 1):
-        empirical_rho = rho_sum[M] / counts[M]
-        empirical_purity = purity_sum[M] / counts[M]
-        max_mean_rho_error = max(
-            max_mean_rho_error,
-            float(np.max(np.abs(empirical_rho - exact_mean_rho(n, M)))),
-        )
-        max_purity_error = max(
-            max_purity_error,
-            abs(empirical_purity - exact_avg_purity(n, M)),
-        )
-
-    return {
-        "supports_enumerated": float((1 << N) - 1),
-        "max_mean_rho_error": max_mean_rho_error,
-        "max_average_purity_error": max_purity_error,
-        "max_residue_bound_violation_t1": max_residue_violation[1],
-        "max_residue_bound_violation_t2": max_residue_violation[2],
-        "max_entropy_routine_difference": max_entropy_routine_diff,
-    }
-
-def page_entropy(n: int) -> float:
-    d = 1 << (n // 2)
-    return float((digamma(d * d + 1) - digamma(d + 1) - (d - 1) / (2 * d)) / math.log(2))
+def dense_ansatz_checks() -> dict[str, float | int]:
+    max_error, tested = 0.0, 0
+    for n in (2, 4, 8, 14):
+        N, d = 1 << n, 1 << (n // 2)
+        for size in range(1, N + 1):
+            lam = (N - size + d * (size - 1)) / (d * (N - 1))
+            if size == N:
+                independent = 0.0
+            else:
+                h2 = -lam * math.log2(lam) - (1 - lam) * math.log2(1 - lam)
+                independent = h2 + (1 - lam) * (math.log2(d) - 1 / (2 * math.log(2)))
+            max_error = max(max_error, close(core.dense_bulk_approximation(n, size), independent,
+                                             "production dense-bulk ansatz", atol=5e-13))
+            tested += 1
+    return {"parameter_pairs_checked": tested, "max_formula_error": max_error}
 
 
-def table_fit_checks() -> dict[str, float]:
-    rows = np.asarray(
-        [
-            (10, 107, 4.072),
-            (12, 276, 5.108),
-            (14, 716, 6.143),
-            (16, 1873, 7.176),
-            (18, 4934, 8.196),
-            (20, 13091, 9.215),
-            (22, 34771, 10.231),
-            (24, 93018, 11.242),
-            (26, 250660, 12.251),
-            (28, 672556, 13.258),
-            (30, 1836685, 14.263),
-        ],
-        dtype=float,
-    )
-    n, M, S = rows.T
-    slope_S, intercept_S = np.polyfit(n, S, 1)
-    slope_M, intercept_M = np.polyfit(n, np.log2(M), 1)
-    page = np.asarray([page_entropy(int(x)) for x in n])
-    gaps = page - S
-    fractions = M / np.power(2.0, n)
-    assert np.all(np.diff(gaps) < 0), "Page gaps are not strictly decreasing"
-    assert np.all(np.diff(fractions) < 0), "support fractions are not strictly decreasing"
-    return {
-        "S_slope": float(slope_S),
-        "S_intercept": float(intercept_S),
-        "log2M_slope": float(slope_M),
-        "log2M_intercept": float(intercept_M),
-        "page_gap_n10": float(gaps[0]),
-        "page_gap_n30": float(gaps[-1]),
-        "support_fraction_n10": float(fractions[0]),
-        "support_fraction_n30": float(fractions[-1]),
-    }
-
-
-def dense_ansatz_equivalence() -> float:
-    n = 14
-    N = 1 << n
-    d = 1 << (n // 2)
-    max_diff = 0.0
-    for M in range(1, N):
-        lam = 1 / d + (d - 1) * (M - 1) / (d * (N - 1))
-        old = (
-            (1 - lam) * (math.log(d) - math.log(1 - lam) - 0.5)
-            - lam * math.log(lam)
-        ) / math.log(2)
-        h2 = -lam * math.log2(lam) - (1 - lam) * math.log2(1 - lam)
-        new = h2 + (1 - lam) * (math.log2(d) - 1 / (2 * math.log(2)))
-        max_diff = max(max_diff, abs(old - new))
-    return max_diff
-
-
-def residue_checks() -> dict[str, float]:
-    path = ROOT / "data" / "residue_matched_summary.csv"
-    with path.open(newline="") as f:
-        rows = list(csv.DictReader(f))
-
-    by_key = {(int(r["k"]), int(r["matched_low_bits"])): r for r in rows}
-    strongest = [(1, 1), (2, 2), (3, 3)]
-    expected = {
-        (1, 1): (0.124881, 0.114442, 0.885607, 0.894136),
-        (2, 2): (0.230201, 0.212232, 0.841422, 0.851975),
-        (3, 3): (0.111500, 0.103991, 0.910577, 0.916102),
-    }
-    max_claim_error = 0.0
-    for key in strongest:
-        r = by_key[key]
-        vals = (
-            float(r["position_residual_deficit"]),
-            float(r["fourier_residual_deficit"]),
-            float(r["cardinality_deficit_reduction_position"]),
-            float(r["cardinality_deficit_reduction_fourier"]),
-        )
-        max_claim_error = max(max_claim_error, max(abs(a - b) for a, b in zip(vals, expected[key])))
-        assert int(r["position_null_count_at_or_below_structured"]) == 0
-        assert int(r["fourier_null_count_at_or_below_structured"]) == 0
-
-    prime = by_key[(1, 1)]
-    forced_gap = float(prime["forced_gap_from_balanced_max_bits"])
-    ceiling = float(prime["entropy_ceiling_bits"])
-    return {
-        "max_residue_claim_rounding_error": max_claim_error,
-        "prime_parity_ceiling_bits": ceiling,
-        "prime_forced_gap_bits": forced_gap,
-        "all_six_strongest_controls_below_all_1000_nulls": 1.0,
-    }
-
-
-def main() -> None:
-    results = {
-        "exhaustive_n4": exhaustive_n4_checks(),
-        "table_fits": table_fit_checks(),
-        "dense_ansatz": {"max_old_new_difference": dense_ansatz_equivalence()},
-        "residue_controls": residue_checks(),
-    }
-
-    lines = ["FINAL SCIENTIFIC VALIDATION", "=" * 29, ""]
-    for section, values in results.items():
-        lines.append(section)
-        lines.append("-" * len(section))
-        for key, value in values.items():
-            lines.append(f"{key}: {value:.16g}")
-        lines.append("")
-
-    # Hard acceptance thresholds.
-    ex = results["exhaustive_n4"]
-    assert ex["max_mean_rho_error"] < 5e-13
-    assert ex["max_average_purity_error"] < 5e-13
-    assert ex["max_residue_bound_violation_t1"] < 5e-13
-    assert ex["max_residue_bound_violation_t2"] < 5e-13
-    assert results["dense_ansatz"]["max_old_new_difference"] < 5e-13
-    tf = results["table_fits"]
-    assert abs(tf["S_slope"] - 0.5093) < 1e-12
-    assert abs(tf["S_intercept"] + 0.9900909090909096) < 1e-12
-    assert abs(tf["log2M_slope"] - 0.7035409513877945) < 1e-12
-    assert abs(tf["log2M_intercept"] + 0.35773436814817394) < 1e-12
-
-    lines.append("STATUS: PASS")
-    out = ROOT / "validation" / "FINAL_SCIENTIFIC_VALIDATION.txt"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(lines) + "\n")
-    print(out.read_text())
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, help="save the report to a new .md file")
+    args = parser.parse_args()
+    try:
+        # Check files first so malformed or stale evidence fails promptly.
+        results = {"Retained Table I consistency": table_fit_checks(),
+                   "Exhaustive small systems": exhaustive_checks(),
+                   "Dense-bulk formula implementation": dense_ansatz_checks(),
+                   "Residue-control evidence": residue_checks()}
+        report = markdown_report("Scientific sanity checks", results,
+            "Exhaustive checks cover every nonempty support at n=2 and n=4 against production routines. "
+            "Table I checks read the actual retained CSV and its derived outputs; they do not rerun the "
+            "peak searches or validate an asymptotic law. The residue checks reconstruct all 12,000-row "
+            "statistics and replay three seeded supports per group (36 total). Formula agreement does "
+            "not establish the dense-bulk ansatz's approximation accuracy. Novelty remains a separate question.")
+        write_report(report, args.output)
+    except (ValueError, OSError, KeyError, TypeError) as exc:
+        print(f"# Scientific sanity checks\n\n**Status: FAIL**\n\n{exc}", file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -1,196 +1,61 @@
-# Support-size entanglement trajectories of random subset states
+# Subset states: support size and entanglement
 
-Code, data, released figures, and validation for the manuscript
-**“Support-size entanglement trajectories of random subset states.”**
-The manuscript updates the existing preprint record [arXiv:2501.06292](https://arxiv.org/abs/2501.06292).
+How does entanglement change when an equal-positive-amplitude quantum state occupies more computational-basis labels? A single label and the full basis both give product states. Random supports in between can give high bipartite entanglement.
 
-Equal-positive-amplitude subset states exhibit a rise–peak–fall entanglement
-trajectory as their computational-basis support grows. This repository contains
-the fixed-cardinality ensemble calculations, exact-moment checks, numerical
-figure scripts, and constrained reference ensembles used in the paper.
+This repository contains exact finite-ensemble formulas, numerical experiments, and released evidence for that question. **The exact mean-state and purity results survive the September 2026 sanity check. The asymptotic location of the von Neumann entropy maximum and the novelty of the revised research contribution remain unresolved.**
 
-## Key results represented in this repository
+The related public preprint is [*Arithmetic sequences as quantum states* (2025), arXiv:2501.06292v1](https://arxiv.org/abs/2501.06292v1), by Ruge Lin, Germán Sierra, and José I. Latorre. “Support-size entanglement trajectories of random subset states” was the working title of a later revision; it is not the title of the current arXiv record checked on 22 September 2026.
 
-- Exact ensemble-mean reduced state for uniformly random supports of fixed size.
-- Exact average purity across a balanced bipartition, yielding a rigorous
-  power-law support window, an optimal interior balance, and a dense-side
-  boundary.
-- Numerical rise–peak–fall trajectories and retained peak estimates through
-  $n=30$.
-- Exact hypergeometric diagonal-entropy and residue-class entropy bounds.
-- Cardinality-, parity-, mod-4-, and mod-8-matched reference ensembles for
-  almost-prime supports, evaluated before and after a quantum Fourier transform.
+## Read the project
 
-## Analytic scale hierarchy
+| Document | Purpose |
+|---|---|
+| [Research notes](docs/RESEARCH.md) | Definitions, exact formulas and proofs, approximations, and figures |
+| [Sanity check](docs/SANITY_CHECK.md) | Findings, corrections, and limits of the validation |
+| [Provenance](PROVENANCE.md) | What the released data can and cannot substantiate |
+| [Reproducibility](docs/REPRODUCIBILITY.md) | Commands, environments, and computational costs |
+| [References](docs/REFERENCES.md) | Verified primary sources and the open novelty question |
 
-Let $N=2^n$ and write a power-law support size as $M=cN^\gamma$, with
-$c>0$. The exact fixed-cardinality average-purity formula has the leading
-structure
+All research prose is Markdown with plain-text or Unicode mathematics. There is no TeX source, bibliography build, or PDF workflow. Python code, CSV evidence, PNG figures, and machine-readable metadata retain their useful formats.
 
-```math
-\overline{P}_{N,M}
-=
-2N^{-1/2}
-+c^{-1}N^{-\gamma}
-+c^2N^{2\gamma-2}
-+\text{lower-order terms}.
-```
+## What is established?
 
-**Near-maximal window.** Every fixed exponent
-$\frac{1}{2}<\gamma<\frac{3}{4}$ gives
+For an even number of qubits n, write N = 2ⁿ and d = 2^(n/2). Choose M distinct basis labels uniformly, assign each amplitude 1/√M, and split the qubits into two fixed halves.
 
-```math
-\overline{S}_{N,M}
-\geq
-\frac{n}{2}-1-o(1).
-```
+| Result | Status |
+|---|---|
+| Exact ensemble-mean reduced state and average purity | Derived by counting; independently checked on all nonempty supports at n = 4 |
+| Mean entropy at least n/2 − 1 − o(1), for M = cN^γ and 1/2 < γ < 3/4 | Consequence of the exact purity formula, for fixed c > 0 |
+| Purity-minimizing support M = 2^(−1/3)N^(2/3) + O(1) | Analytic result; does not locate the von Neumann entropy maximum |
+| Rise–peak–fall curves and retained peak estimates through n = 30 | Finite numerical evidence; original global-search records are incomplete |
+| Hypergeometric diagonal-entropy bound and low-bit residue ceiling | Exact bounds with stated ensemble/cut assumptions |
+| Almost-prime deficits after matching cardinality and residues | Finite comparisons at n = 14; no unique arithmetic fingerprint established |
 
-**Purity-optimal interior scale.** The exponent
-$\gamma=\frac{2}{3}$ uniquely balances the sparse
-$N^{-\gamma}$ correction and the dense rectangle
-$N^{2\gamma-2}$ correction. Optimizing the remaining prefactor gives
+![Released support-size trajectory](outputs/fig1/fig1_concentration.png)
 
-```math
-M
-=
-2^{-1/3}N^{\frac{2}{3}}+O(1).
-```
+This figure summarizes sampled finite systems. It is not a concentration theorem or an asymptotic scaling result.
 
-**Dense-side boundary.** The exponent $\gamma=\frac{3}{4}$ is the point at
-which the rectangle contribution enters at the same $N^{-1/2}$ order as the
-balanced-cut background.
-
-The numerical maximum of the mean von Neumann entropy is a separate quantity.
-Over $n=10,\ldots,30$, the retained estimates give
-
-```math
-\log_2 \widehat{M}_n
-=
-0.703541\,n-0.357734.
-```
-
-The pointwise effective exponent is
-
-```math
-\gamma_n^{\mathrm{eff}}
-=
-\frac{\log_2 \widehat{M}_n}{n},
-\qquad
-\gamma_{10}^{\mathrm{eff}}\approx 0.674,
-\qquad
-\gamma_{30}^{\mathrm{eff}}\approx 0.694.
-```
-
-It increases over the retained range. This motivates comparison with the
-$\frac{3}{4}$ dense-side boundary but does not establish an asymptotic peak law.
-
-## Repository map
-
-```text
-subset_states/     reusable scientific routines
-scripts/           figure, validation, and local-verification entry points
-data/              Table I and released matched-null datasets
-outputs/            manuscript-ready figures and generated outputs
-tests/              lightweight and exhaustive small-system regression tests
-validation/         final independent validation reports
-exploratory/        historical experiments not used in the manuscript
-docs/               audit and release documentation
-```
-
-## Quick start
+## Run the checks
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python3 -m pip install -r requirements.txt
-python3 scripts/run_smoke_tests.py
+python -m pip install -r requirements.txt
+python scripts/run_smoke_tests.py
+python scripts/final_scientific_validation.py
+python scripts/check_repository.py
 ```
 
-Run the independent publication validation:
+Redraw all seven figures from released CSV files, without repeating simulations:
 
 ```bash
-python3 scripts/final_scientific_validation.py
+python scripts/reproduce_publication_figures.py
 ```
 
-Regenerate the fast deterministic figures and verify that all seven released
-PDFs are present:
+The historical command name is retained for compatibility. New outputs go under `generated/`; the released evidence stays in `data/` and `outputs/`. See [reproducibility](docs/REPRODUCIBILITY.md) for reduced simulations and expensive runs.
 
-```bash
-python3 scripts/reproduce_publication_figures.py
-```
+## Scope and citation
 
-A reduced computational smoke run is available through:
+This is a research repository, not a submission-readiness certificate. The original global searches, especially n = 22–30, have not been reconstructed. Small changes in fitted slopes when dropping those rows do not resolve that provenance gap. Broader novelty claims require comparison with existing sparse-state and fixed-size subset-state results.
 
-```bash
-python3 scripts/reproduce_publication_figures.py --smoke
-```
-
-The full publication computations can be launched with `--full`, but several
-runs are intentionally expensive.
-
-## Publication figures
-
-| Figure | Scientific content | Main script | Released output |
-|---|---|---|---|
-| 1 | Support-size trajectory and cut comparison | `scripts/fig1_concentration.py` | `outputs/fig1/fig1_concentration.pdf` |
-| 2 | Peak entropy and support-size scaling | `scripts/fig2_peak_scaling.py` | `outputs/fig2/fig2_peak_scaling.pdf` |
-| 3 | Reduced-state spectrum near the peak | `scripts/fig3_spectral.py` | `outputs/fig3/fig3_spectral_bulk.pdf` |
-| 4 | Sparse and dense approximations | `scripts/fig4_approximation.py` | `outputs/fig4/fig4_approximation.pdf` |
-| 5 | Cardinality and residue controls | `scripts/fig5_qft_residue_controls.py` | `outputs/fig5/fig5_qft_residue_controls.pdf` |
-| 6 | Rényi trajectories | `scripts/fig6_renyi.py` | `outputs/fig6/fig6_renyi.pdf` |
-| 7 | Entropy over balanced cuts | `scripts/fig7_partitions.py` | `outputs/fig7/fig7_partitions.pdf` |
-
-Figure 5 can be redrawn exactly from the released CSV files. The matched-null
-raw dataset contains 12,000 paired computational/Fourier samples.
-
-## Table I and local verification
-
-`data/table_i_peaks.csv` stores the retained peak estimates used in the paper.
-The command
-
-```bash
-python3 scripts/peak_scaling_verification.py --n-values 10 12 14
-```
-
-performs a local neighbourhood check around selected tabulated values. It is not
-a reconstruction of the original global search. Full technical provenance and
-the robustness comparison are documented in [PROVENANCE.md](PROVENANCE.md).
-
-## Figure 5 constrained ensembles
-
-The released files are:
-
-```text
-data/fig5_random_qft_summary.csv
-data/fig5_almost_prime_unions.csv
-data/residue_matched_summary.csv
-data/residue_matched_samples.csv
-data/residue_entropy_bounds.csv
-```
-
-Regenerate the null samples with:
-
-```bash
-python3 scripts/run_residue_controls.py
-python3 scripts/fig5_qft_residue_controls.py
-```
-
-## Reproducibility levels
-
-1. **Fast:** unit tests, exact small-system checks, Figure 2, and Figure 5 redraw.
-2. **Standard:** regenerate selected numerical figures with reduced or custom
-   workloads.
-3. **Computational:** use publication defaults for the full sampling runs and
-   local high-dimensional peak checks.
-
-All stochastic scripts expose seeds. The tested software environment is recorded
-in `requirements-tested.txt`.
-
-## Citation
-
-Use the citation metadata in `CITATION.cff`. The preferred paper citation is the
-updated arXiv record and, once available, the journal version.
-
-## License
-
-The repository is released under the MIT License. See `LICENSE`.
+Use [CITATION.cff](CITATION.cff) for the public preprint, and cite a specific repository commit when using this revised implementation or data. The existing [MIT license](LICENSE) and author attribution are preserved.

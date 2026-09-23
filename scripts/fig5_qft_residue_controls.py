@@ -32,13 +32,21 @@ def values(rows: list[dict[str, str]], key: str) -> np.ndarray:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path, default=ROOT / "data")
-    parser.add_argument("--outdir", type=Path, default=ROOT / "outputs" / "fig5")
+    parser.add_argument("--outdir", type=Path, default=ROOT / "generated" / "figures" / "fig5")
     args = parser.parse_args()
     args.outdir.mkdir(parents=True, exist_ok=True)
 
     baseline = read_rows(args.data_dir / "fig5_random_qft_summary.csv")
     unions = read_rows(args.data_dir / "fig5_almost_prime_unions.csv")
     controls = read_rows(args.data_dir / "residue_matched_summary.csv")
+
+    largest_support = int(max(values(baseline, "m")))
+    n = largest_support.bit_length() - 1
+    if 1 << n != largest_support:
+        raise ValueError("baseline must include the full-support endpoint to infer n")
+    control_n = {int(row["n"]) for row in controls}
+    if control_n != {n}:
+        raise ValueError(f"Figure 5 baseline n={n} disagrees with controls n={control_n}")
 
     apply_journal_style()
     fig, (ax, ax2) = plt.subplots(
@@ -60,8 +68,8 @@ def main() -> None:
     ax.plot(union_m, values(unions, "qft_entropy"), "x", color=COOL_PALETTE[5], markersize=4.8, markeredgewidth=1.0, label=r"QFT $U_{N,k}$")
     ax.set_xlabel(r"support size $M$")
     ax.set_ylabel("entropy (bits)")
-    ax.set_xlim(0, 2**14)
-    ax.set_ylim(0, 7)
+    ax.set_xlim(0, 1 << n)
+    ax.set_ylim(0, n / 2)
     ax.legend(frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.42), ncol=2, columnspacing=0.9, handlelength=1.8)
     ax.text(0.02, 0.96, "(a)", transform=ax.transAxes, ha="left", va="top", fontweight="bold")
 
@@ -83,7 +91,7 @@ def main() -> None:
     ax2.set_ylabel(r"residual deficit $\Delta_t$ (bits)")
     ax2.set_xlabel("constraint retained in null ensemble", labelpad=2)
     ax2.set_xlim(-0.5, 3.35)
-    ax2.set_ylim(0, 1.62)
+    ax2.margins(y=0.10)
     style_legend = [
         Line2D([0], [0], color="0.2", marker="o", linestyle="-", markersize=4, label="computational basis"),
         Line2D([0], [0], color="0.2", marker="o", markerfacecolor="white", linestyle="--", markersize=4, label="after QFT"),
@@ -91,7 +99,7 @@ def main() -> None:
     ax2.legend(handles=style_legend, frameon=False, loc="upper right", handlelength=2.0)
     ax2.text(0.02, 0.96, "(b)", transform=ax2.transAxes, ha="left", va="top", fontweight="bold")
     fig.subplots_adjust(left=0.085, right=0.99, top=0.97, bottom=0.26, wspace=0.32)
-    save_figure(fig, args.outdir / "fig5_qft_residue_controls.pdf")
+    save_figure(fig, args.outdir / "fig5_qft_residue_controls.png")
 
 
 if __name__ == "__main__":

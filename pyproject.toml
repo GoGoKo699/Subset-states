@@ -1,6 +1,6 @@
 [project]
 name = "subset-state-entanglement"
-version = "1.0.0rc1"
+version = "1.0.0rc2"
 description = "Numerical and analytical tools for support-size entanglement trajectories of random subset states"
 requires-python = ">=3.10"
 authors = [

@@ -17,7 +17,7 @@ def main() -> None:
     parser.add_argument("--data-dir", type=Path, default=ROOT / "outputs" / "fig4")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
-    out = args.out if args.out is not None else args.data_dir / "fig4_approximation.pdf"
+    out = args.out if args.out is not None else ROOT / "generated" / "figures" / "fig4" / "fig4_approximation.png"
     plot_fig4(args.data_dir, out)
 
 

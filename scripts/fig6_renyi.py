@@ -48,7 +48,7 @@ def main() -> None:
     parser.add_argument("--zoom-points", type=int, default=100)
     parser.add_argument("--zoom-samples", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=20250604)
-    parser.add_argument("--outdir", type=Path, default=ROOT / "outputs" / "fig6")
+    parser.add_argument("--outdir", type=Path, default=ROOT / "generated" / "full" / "fig6")
     args = parser.parse_args()
     args.outdir.mkdir(parents=True, exist_ok=True)
     N = 1 << args.n
@@ -62,7 +62,7 @@ def main() -> None:
     )
     write_rows(args.outdir / "fig6_renyi_summary.csv", rows, rows[0].keys())
     write_rows(args.outdir / "fig6_renyi_zoom_summary.csv", zoom, zoom[0].keys())
-    plot_fig6(args.outdir, args.outdir / "fig6_renyi.pdf", n=args.n)
+    plot_fig6(args.outdir, args.outdir / "fig6_renyi.png", n=args.n)
 
 
 if __name__ == "__main__":

@@ -22,3 +22,9 @@ final_audit.txt
 *.zip
 *.tar.gz
 *.tgz
+
+# Regenerated checks and figures
+generated/
+*.egg-info/
+build/
+dist/
