@@ -1,6 +1,6 @@
 # Repository working rules
 
-- Keep research prose and audit reports in Markdown. Use plain-text or Unicode mathematics; do not introduce TeX sources, BibTeX, PDF deliverables, or a TeX build dependency.
+- Keep research prose and audit reports in Markdown. Use Unicode mathematics and Markdown-supported subscript/superscript tags; do not introduce TeX sources, BibTeX, PDF deliverables, or a TeX build dependency. In `PAPER.md`, use numbered equation blocks and typographic inline mathematics instead of code formatting. Check the rendered layout after equation edits.
 - Preserve the existing license and author attribution.
 - Maintain `PAPER.md` as the complete manuscript, including its proofs, appendices, figure captions, declarations, and bibliography. Keep the manuscript inventory and source record in sync with intentional structural changes; use the research notes as a companion, not a replacement for paper content.
 - Keep proved finite-ensemble identities, asymptotic consequences, heuristic approximations, finite numerical observations, and historical estimates explicitly distinguished.
