@@ -52,6 +52,8 @@ def validate_math(content: str) -> list[str]:
             errors.append('unclosed mathematical alignment environment')
         if re.search(r'\\(?:ket|bra|braket|Tr)\b', expression):
             errors.append('undefined manuscript macro in native math')
+        if re.search(r'\\(?:tag|operatorname)\b', expression):
+            errors.append('math macro failed the GitHub rendering review; use an explicit label or upright text')
     if re.search(r'\\(?:documentclass|usepackage|newcommand|renewcommand)\b', prose):
         errors.append('standalone document commands do not belong in Markdown')
     return list(dict.fromkeys(errors))
@@ -98,11 +100,12 @@ def validate(root: Path = ROOT) -> list[str]:
     blocks = MATH_BLOCK.findall(content)
     if len(blocks) != counts['numbered_equations'] + counts['abstract_displays']:
         errors.append('manuscript must retain all 90 native math displays')
-    equations = [number for block in blocks for number in re.findall(r'\\tag\{(\d+)\}', block)]
+    equations = [number for block in blocks
+                 for number in re.findall(r'\\qquad\\text\{\((\d+)\)\}', block)]
     if equations != [str(n) for n in range(1, counts['numbered_equations'] + 1)]:
         errors.append('manuscript equation markers must appear once each in source order')
     for number in equations:
-        pattern = rf'<a id="eq-{number}"></a>\s*```math\n(?:(?!```).)*\\tag\{{{number}\}}\s*```'
+        pattern = rf'<a id="eq-{number}"></a>\s*```math\n(?:(?!```).)*\\qquad\\text\{{\({number}\)\}}\s*```'
         if not re.search(pattern, content, re.S):
             errors.append(f'equation {number} is not paired with its stable anchor')
     if '`' in MATH_BLOCK.sub('', content) or re.search(r'</?(?:sub|sup)>', content):

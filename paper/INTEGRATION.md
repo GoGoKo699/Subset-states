@@ -22,7 +22,7 @@ The [machine-readable manifest](../validation/manuscript_manifest.json) records 
 
 ## Representation
 
-All prose and mathematics are maintained in Markdown, following the native equation style used by [Hopf-Frame-Compilation](https://github.com/GoGoKo699/Hopf-Frame-Compilation). GitHub renders display equations from `math` fences and inline mathematics from dollar-delimited expressions. Fractions, sums, radicals, matrices, and indices use standard mathematical typesetting; aligned rows keep long formulas readable. Numbered displays use explicit equation tags alongside stable local anchors. The original equation numbering, reference numbering, section order, and appendix order are retained.
+All prose and mathematics are maintained in Markdown, following the native equation style used by [Hopf-Frame-Compilation](https://github.com/GoGoKo699/Hopf-Frame-Compilation). GitHub renders display equations from `math` fences and inline mathematics from dollar-delimited expressions. Fractions, sums, radicals, matrices, and indices use standard mathematical typesetting; aligned rows keep long formulas readable. Numbered displays use explicit equation labels alongside stable local anchors. The original equation numbering, reference numbering, section order, and appendix order are retained.
 
 TeX-style mathematical notation appears only within Markdown. The repository contains no standalone TeX documents, BibTeX files, PDF deliverables, or LaTeX build dependency. A Markdown viewer must support mathematical rendering to reproduce GitHub's layout; plain-text viewers show the formula source.
 

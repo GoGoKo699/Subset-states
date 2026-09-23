@@ -12,7 +12,7 @@ Let $n$ be a positive even integer, $N = 2^n$, and $d = 2^{n/2}$. Choose a suppo
 
 All nonzero amplitudes are real and positive. Random phases or Gaussian nonzero amplitudes give different ensembles. A fixed balanced cut identifies each label with a pair $(a,b)$ in a $d$-by-$d$ grid. Write $X$ for its binary incidence matrix and $C = X/\sqrt M$. The right reduced state is $\rho = X^{\mathsf T}X/M$. For a general complex coefficient matrix with entries $C_{a,b}$, the corresponding formula is $\rho = C^{\mathsf T}C^*$, where $*$ denotes entrywise conjugation. Its eigenvalues are the squared singular values of $C$.
 
-The von Neumann entropy is $S = -\sum_i\lambda_i\log_2\lambda_i$, with zero terms omitted. Rényi-2 entropy is $-\log_2\operatorname{Tr}(\rho^2)$; min-entropy is $-\log_2\lambda_{\max}$. Always $0\le S\le\log_2 d = n/2$.
+The von Neumann entropy is $S = -\sum_i\lambda_i\log_2\lambda_i$, with zero terms omitted. Rényi-2 entropy is $-\log_2\mathrm{Tr}(\rho^2)$; min-entropy is $-\log_2\lambda_{\max}$. Always $0\le S\le\log_2 d = n/2$.
 
 A singleton support is a computational-basis product state. Full support is $\lvert+\rangle$ raised to the $n$-fold tensor product and is also unentangled. A permutation-matrix support of size $d$ is maximally entangled. Thus support size alone does not specify an individual state's entropy. The curves here describe ensembles indexed by $M$, not a physical time evolution or a nested growth process.
 
@@ -47,7 +47,7 @@ Implementation: `fixed_cardinality_mean_spectrum` in [core.py](../subset_states/
 
 ## 3. Exact average purity
 
-Expand $\operatorname{Tr}(\rho^2)$ as the sum of $X_{a,b}X_{a,c}X_{a',c}X_{a',b}$ over all four indices, divided by $M^2$. There are three cases:
+Expand $\mathrm{Tr}(\rho^2)$ as the sum of $X_{a,b}X_{a,c}X_{a',c}X_{a',b}$ over all four indices, divided by $M^2$. There are three cases:
 
 | Index pattern | Number of terms | Distinct occupied cells |
 |---|---:|---:|
@@ -59,7 +59,7 @@ Substituting the inclusion probabilities gives
 
 ```math
 \begin{aligned}
-\overline P &= \mathbb E[\operatorname{Tr}(\rho^2)]\\
+\overline P &= \mathbb E[\mathrm{Tr}(\rho^2)]\\
 &= \frac1M+\frac{2(d-1)(M-1)}{M(N-1)}\\
 &\quad+\frac{(d-1)^2(M-1)(M-2)(M-3)}{M(N-1)(N-2)(N-3)}.
 \end{aligned}
@@ -67,11 +67,11 @@ Substituting the inclusion probabilities gives
 
 The formula covers $n\ge2$ even and every valid $M$, including both product-state endpoints. The last contribution counts rectangles in the grid; no independence approximation is used.
 
-For each sample $S\ge-\log_2\operatorname{Tr}(\rho^2)$. Since $-\log_2$ is convex, Jensen's inequality yields the ensemble bound
+For each sample $S\ge-\log_2\mathrm{Tr}(\rho^2)$. Since $-\log_2$ is convex, Jensen's inequality yields the ensemble bound
 
 ```math
 \mathbb E[S]
-\ge\mathbb E[-\log_2\operatorname{Tr}(\rho^2)]
+\ge\mathbb E[-\log_2\mathrm{Tr}(\rho^2)]
 \ge-\log_2\overline P.
 ```
 
@@ -132,11 +132,11 @@ This is the crossover where the rectangle term becomes comparable with the balan
 The occupancy $W$ of any column is hypergeometric with population size $N$, $d$ marked cells, and $M$ draws. The diagonal probability of that column is $W/M$. Hence the mean diagonal entropy is exactly
 
 ```math
-\mathbb E[H(\operatorname{diag}\rho)]
+\mathbb E[H(\mathrm{diag}\rho)]
 =-d\,\mathbb E\!\left[\frac WM\log_2\!\left(\frac WM\right)\right].
 ```
 
-Deleting off-diagonal coherences cannot reduce entropy, so $\mathbb E[S]\le\mathbb E[H(\operatorname{diag}\rho)]$. The function named `hypergeometric_occupancy_approximation` computes this exact diagonal expectation; treating it as an approximation to von Neumann entropy is appropriate only when coherences are sufficiently small.
+Deleting off-diagonal coherences cannot reduce entropy, so $\mathbb E[S]\le\mathbb E[H(\mathrm{diag}\rho)]$. The function named `hypergeometric_occupancy_approximation` computes this exact diagonal expectation; treating it as an approximation to von Neumann entropy is appropriate only when coherences are sufficiently small.
 
 For the natural cut, the right subsystem consists of the low $n/2$ bits. Let $p_r$ be the fraction of occupied labels congruent to $r$ modulo $2^t$, with $0\le t\le n/2$. Dephase the $t$ low bits. The resulting blocks have total weights $p_r$ and dimension at most $d/2^t$. Their entropy is at most $H(p)+\log_2(d/2^t)$, while dephasing cannot decrease entropy. Therefore every such support satisfies
 
